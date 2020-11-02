@@ -5,12 +5,12 @@ Feature: EditUserProfile
   Scenario Outline: Edit profile
     Given The user is logged in
     Given User is on the profile page
-    When I click the button 'Edit profile'
-    Then Redirect to the 'edit' page
+    When I click the button "Edit profile"
+    Then Redirect to the "Edit" page
     Then I can change my description
     And I can change my nickname
     When I upload a picture of <format>
-    And I click the button 'Update profile'
+    And I click the button "Update profile"
     Then <status>-Popup with <message>
 
     Examples:
