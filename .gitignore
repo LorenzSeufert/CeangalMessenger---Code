@@ -1,3 +1,6 @@
 /.idea/
 /target/
 /mainModule.iml
+/Electron-Frontend/electron-frontend.iml
+/Kotlin-Backend/kotlin-backend.iml
+/Kotlin-Backend/target/
