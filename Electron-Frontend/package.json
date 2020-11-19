@@ -2,7 +2,7 @@
   "name": "electron-frontend",
   "version": "1.0.0",
   "description": "Frontend for Ceangal-Messenger",
-  "main": "main.js",
+  "main": "app/src/main.js",
   "scripts": {
     "start": "electron ."
   },

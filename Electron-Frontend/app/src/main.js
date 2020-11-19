@@ -9,7 +9,7 @@ function createWindow() {
         }
     })
 
-    win.loadFile('index.html')
+    win.loadFile('app/src/index.html')
     win.webContents.openDevTools()
 }
 
