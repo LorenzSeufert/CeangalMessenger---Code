@@ -2,7 +2,7 @@
   "name": "electron-frontend",
   "version": "1.0.0",
   "description": "Frontend for Ceangal-Messenger",
-  "main": "app/src/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^10.1.6"
+    "bootstrap": "^4.5.3",
+    "electron": "^10.1.6",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1"
   }
 }
