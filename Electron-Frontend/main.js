@@ -12,7 +12,7 @@ function createWindow() {
     })
     mainWindow.loadFile('src/index.html')
 
-    /*const loginWindow = new BrowserWindow({
+    const loginWindow = new BrowserWindow({
         parent: mainWindow,
         width: 400,
         height: 300,
@@ -42,7 +42,7 @@ function createWindow() {
             ]
         }
     ]);
-    Menu.setApplicationMenu(menu);*/
+    Menu.setApplicationMenu(menu);
 
 }
 
