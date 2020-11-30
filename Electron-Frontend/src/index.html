@@ -4,11 +4,43 @@
     <meta charset="UTF-8">
     <title>Hello World</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Hello World!</h1>
+    <div>
+        <div class="col-sm-6 col-md-4">
+            <img src="http://placehold.it/380x500" class="img-rounded img-responsive" />
+        </div>
+        <h4> Profile Name </h4>
+        <small><cite title="City"></cite>City <i class="glyphicon glyphicon-map-marker" ></i></small>
+        <p>
+            <i class="glyphicon glyphicon-envelope"></i> email@email.com <br/>
+            <i class="glyphicon glyphicon-gift" ></i> 01.01.2020 <br/>
+        </p>
+        <p>
+            Description
+            ..
+            ...
+            ....
+        </p>
+    </div>
+
+
     We are using node <script>document.write(process.versions.node)</script>,
     Chrome <script>document.write(process.versions.chrome)</script>
     and Electron <script>document.write(process.versions.electron)</script>.
 </body>
 </html>
+<style>
+    body{padding-top:30px;}
+
+    .glyphicon {  margin-bottom: 10px;margin-right: 10px;}
+
+    small {
+        display: block;
+        line-height: 1.428571429;
+        color: #999;
+    }
+</style>
