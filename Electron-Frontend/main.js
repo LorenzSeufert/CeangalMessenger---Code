@@ -5,14 +5,14 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        show: false,
+        show: true,
         webPreferences: {
             nodeIntegration: true
         }
     })
     mainWindow.loadFile('src/index.html')
 
-    const loginWindow = new BrowserWindow({
+    /*const loginWindow = new BrowserWindow({
         parent: mainWindow,
         width: 400,
         height: 300,
@@ -42,7 +42,7 @@ function createWindow() {
             ]
         }
     ]);
-    Menu.setApplicationMenu(menu);
+    Menu.setApplicationMenu(menu);*/
 
 }
 
