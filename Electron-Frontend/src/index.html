@@ -11,24 +11,27 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script defer src="js/userProfile.js"></script>
 </head>
 <body>
     <div>
         <div class="col-sm-6 col-md-4">
-            <img src="http://placehold.it/380x500" class="img-rounded img-responsive" />
+            <img id="profile" src="http://placehold.it/380x500" class="img-rounded img-responsive" />
         </div>
-        <h4> Profile Name </h4>
-        <small><cite title="City"></cite>City <i class="glyphicon glyphicon-map-marker" ></i></small>
+        <br/>
+        <h4><p id="username"></p></h4>
+        <p><a id="age"></a> years old</p>
         <p>
-            <i class="glyphicon glyphicon-envelope"></i> email@email.com <br/>
-            <i class="glyphicon glyphicon-gift" ></i> 01.01.2020 <br/>
+            <a id="email"></a>
+            <!-- email icon -->
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
+            </svg>
         </p>
-        <p>
-            Description
-            ..
-            ...
-            ....
-        </p>
+        <small><cite title="City"></cite> <a id="city"></a> <i class="glyphicon glyphicon-map-marker" ></i></small>
+        <br/>
+        <p>Beschreibung: <p id="description"></p></p>
     </div>
 
 
@@ -37,6 +40,7 @@
     and Electron <script>document.write(process.versions.electron)</script>.
 </body>
 </html>
+
 <style>
     body{padding-top:30px;}
 
