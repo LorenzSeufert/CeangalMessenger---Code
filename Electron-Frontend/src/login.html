@@ -30,33 +30,36 @@
     <script>
         let $ = require('jquery')
         let fs = require('fs')
-        let loginFile = 'src/js/loginDemoData'
+        const loginFile = require('./js/account.json')
         const ipcMain = require('electron').ipcRenderer;
 
+        var user
+
         $('#btn-login').on('click', () =>{
+            let txtUser=$('#txtUsr').val();
+            let txtPwd=$('#txtPwd').val();
 
-            if(fs.existsSync(loginFile)) {
-                let data = fs.readFileSync(loginFile, 'utf8').split('\n')
+            // console.log(txtUser)
+            // console.log(txtPwd)
 
-                data.forEach((authorities, index) => {
-                    let [ user, password ] = authorities.split(',')
-                    console.log(user)
-                    console.log(password)
-                    let [name1,usr]=user.split(':')
-                    let [name2,pass]=password.split(':')
+            if (loginFile.user1.loginName==txtUser && loginFile.user1.password==txtPwd){
+                user = "user1"
+                localStorage.setItem("account", user)
+                ipcMain.sendSync('entry-accepted', 'true')
 
-                    let txtUser=$('#txtUsr').val();
-                    let txtPwd=$('#txtPwd').val();
+            }
+            else if (loginFile.user2.loginName==txtUser && loginFile.user2.password==txtPwd){
+                user = "user2"
+                localStorage.setItem("account", user)
+                ipcMain.sendSync('entry-accepted', 'true')
 
-                    if(txtUser===usr && txtPwd===pass){
-                        ipcMain.sendSync('entry-accepted', 'true')
-                    }
-                    else{
-                        $('#lbl').text('Username or Password is incorrect')
-                    }
-                })
+            }
+            else {
+                $('#lbl').text('Username or Password is incorrect')
             }
         })
+
+
     </script>
 </body>
 </html>

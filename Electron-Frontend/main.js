@@ -1,22 +1,28 @@
-const {app, BrowserWindow, Menu} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain} = require('electron')
 const shell = require('electron').shell
 
+let mainWindow;
+let loginWindow;
+
 function createWindow() {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
-        show: true,
+        show: false,
         webPreferences: {
             nodeIntegration: true
         }
     })
     mainWindow.loadFile('src/index.html')
 
-    const loginWindow = new BrowserWindow({
+    loginWindow = new BrowserWindow({
         parent: mainWindow,
         width: 400,
         height: 300,
-        frame: false
+        frame: false,
+        webPreferences: {
+            nodeIntegration: true
+        }
     })
     loginWindow.loadFile('src/login.html')
 
@@ -44,7 +50,16 @@ function createWindow() {
     ]);
     Menu.setApplicationMenu(menu);
 
+    loginWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 }
+
+ipcMain.on('entry-accepted', (event, arg) => {
+    if(arg==='true'){
+        mainWindow.show()
+        loginWindow.hide()
+    }
+})
 
 app.whenReady().then(createWindow)
 
