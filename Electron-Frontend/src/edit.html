@@ -9,26 +9,26 @@
     <div>
         <div>
             <label>Profile-Picture URL: </label><br/>
-            <input placeholder="url">
+            <input id="editPicture" placeholder="url">
         </div>
         <div>
             <label>Username: </label><br/>
-            <input placeholder="username">
+            <input id="editUsername" placeholder="username">
         </div>
         <div>
             <label>Age: </label><br/>
-            <input type="number" placeholder="age">
+            <input id="editAge" type="number" placeholder="age">
         </div>
         <div>
             <label>City: </label><br/>
-            <input placeholder="city you live in">
+            <input id="editCity" placeholder="city you live in">
         </div>
         <div>
             <label>Description: </label><br/>
             <textarea id="editDesc"></textarea>
         </div>
         <div>
-            <button>Save</button>
+            <button onclick="saveProfile()">Save</button>
         </div>
     </div>
 
@@ -37,3 +37,47 @@
     <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+<script>
+  const loginFile = require('./js/account.json')
+  const ipcMain = require('electron').ipcRenderer;
+  var user = localStorage.getItem("account")
+
+  let saveProfile = function () {
+    if (user === "user1") {
+      if (!document.getElementById("editPicture").value === "") {
+        loginFile.user1.profilePicture = document.getElementById("editPicture").value;
+      }
+      if (!document.getElementById("editUsername").value === "") {
+        loginFile.user1.name = document.getElementById("editUsername").value;
+      }
+      if (!document.getElementById("editAge").value === "") {
+        loginFile.user1.age = document.getElementById("editAge").value;
+      }
+      if (!document.getElementById("editCity").value === "") {
+        loginFile.user1.city = document.getElementById("editCity").value;
+      }
+      if (!document.getElementById("editDesc").value === "") {
+        loginFile.user1.description = document.getElementById("editDesc").value;
+      }
+    } else if(user === "user2") {
+      if (!document.getElementById("editPicture").value === "") {
+        loginFile.user2.profilePicture = document.getElementById("editPicture").value;
+      }
+      if (!document.getElementById("editUsername").value === "") {
+        loginFile.user2.name = document.getElementById("editUsername").value;
+      }
+      if (!document.getElementById("editAge").value === "") {
+        loginFile.user2.age = document.getElementById("editAge").value;
+      }
+      if (!document.getElementById("editCity").value === "") {
+        loginFile.user2.city = document.getElementById("editCity").value;
+      }
+      if (!document.getElementById("editDesc").value === "") {
+        loginFile.user2.description = document.getElementById("editDesc").value;
+      }
+    }
+    ipcMain.sendSync('save-edit','true')
+  }
+
+</script>

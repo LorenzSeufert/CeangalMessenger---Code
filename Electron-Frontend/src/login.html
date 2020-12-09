@@ -52,7 +52,6 @@
                 user = "user2"
                 localStorage.setItem("account", user)
                 ipcMain.sendSync('entry-accepted', 'true')
-
             }
             else {
                 $('#lbl').text('Username or Password is incorrect')
