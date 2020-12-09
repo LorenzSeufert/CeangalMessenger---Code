@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="./contents/bootstrap/4.5.3/css/bootstrap.min.css" />
+    <script>window.jQuery = window.$ = require('jquery');</script>
+    <script src="./contents/popper.js/1.16.3/popper.min.js"></script>
+    <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+
+    <script defer src="js/userProfile.js"></script>
+</head>
+<body>
+    <div>
+        <div>
+            <label>Profile-Picture URL: </label><br/>
+            <input placeholder="url">
+        </div>
+        <div>
+            <label>Username: </label><br/>
+            <input placeholder="username">
+        </div>
+        <div>
+            <label>Age: </label><br/>
+            <input type="number" placeholder="age">
+        </div>
+        <div>
+            <label>City: </label><br/>
+            <input placeholder="city you live in">
+        </div>
+        <div>
+            <label>Description: </label><br/>
+            <textarea id="editDesc"></textarea>
+        </div>
+        <div>
+            <button>Save</button>
+        </div>
+    </div>
+</body>
+</html>
