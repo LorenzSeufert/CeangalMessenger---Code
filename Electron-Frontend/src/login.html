@@ -3,27 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+
     <link rel="stylesheet" href="./contents/bootstrap/4.5.3/css/bootstrap.min.css" />
-    <script src="./contents/jquery/3.5.1/jquery-3.5.1.min.js"></script>
-    <script src="./contents/popper.js/1.16.3/popper.min.js"></script>
-    <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/login.css"/>
 </head>
 <body>
     <div class="container">
         <br/>
         <div class="form-group">
             <label for="txtUsr">User Name:</label>
-            <br>
-            <input type="text" class="form-control" id="txtUsr">
+            <input type="text" class="form-control bg-dark text-light" id="txtUsr">
         </div>
         <div class="form-group">
             <label for="txtPwd">Password:</label>
-            <br>
-            <input type="password" class="form-control" id="txtPwd">
+            <input type="password" class="form-control bg-dark text-light" id="txtPwd">
         </div>
-        <br>
         <button class="btn btn-dark" id="btn-login">Login</button>
         <label  id="lbl"></label>
     </div>
+
+
+    <script>window.jQuery = window.$ = require('jquery');</script>
+    <script src="contents/popper/1.16.3/popper.min.js"></script>
+    <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <script>
+        let $ = require('jquery')
+        let fs = require('fs')
+        let loginFile = 'src/js/loginDemoData'
+        const ipcMain = require('electron').ipcRenderer;
+
+        $('#btn-login').on('click', () =>{
+
+            if(fs.existsSync(loginFile)) {
+                let data = fs.readFileSync(loginFile, 'utf8').split('\n')
+
+                data.forEach((authorities, index) => {
+                    let [ user, password ] = authorities.split(',')
+                    console.log(user)
+                    console.log(password)
+                    let [name1,usr]=user.split(':')
+                    let [name2,pass]=password.split(':')
+
+                    let txtUser=$('#txtUsr').val();
+                    let txtPwd=$('#txtPwd').val();
+
+                    if(txtUser===usr && txtPwd===pass){
+                        ipcMain.sendSync('entry-accepted', 'true')
+                    }
+                    else{
+                        $('#lbl').text('Username or Password is incorrect')
+                    }
+                })
+            }
+        })
+    </script>
 </body>
 </html>
