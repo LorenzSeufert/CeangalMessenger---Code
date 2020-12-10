@@ -6,7 +6,7 @@
     "city" : "Karlsruhe",
     "email": "admin@gmail.com",
     "age": 99,
-    "description": "I am the admin",
+    "description": "I am the admin. I like to make admin things. Maybe you want to help me.",
     "profilePicture": "https://upload.wikimedia.org/wikipedia/commons/a/a6/User-admin.svg"
   },
   "user2" : {

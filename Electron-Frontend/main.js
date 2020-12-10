@@ -15,7 +15,7 @@ function createWindow() {
     }
   })
   mainWindow.loadFile('src/index.html')
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   loginWindow = new BrowserWindow({
     parent: mainWindow,
@@ -27,19 +27,20 @@ function createWindow() {
     }
   })
   loginWindow.loadFile('src/login.html')
-  loginWindow.webContents.openDevTools()
+  // loginWindow.webContents.openDevTools()
 
   editPage = new BrowserWindow({
     parent: mainWindow,
-    width: 800,
+    width: 600,
     height: 600,
     show: false,
+    frame: false,
     webPreferences: {
       nodeIntegration: true
     }
   })
   editPage.loadFile('src/edit.html')
-  editPage.webContents.openDevTools()
+  // editPage.webContents.openDevTools()
 
   const menu = Menu.buildFromTemplate([
     {
@@ -75,14 +76,14 @@ ipcMain.on('entry-accepted', (event, arg) => {
 
 ipcMain.on('edit-profile', (event, arg) => {
   if (arg === 'true') {
-    mainWindow.show()
+    mainWindow.hide()
     editPage.show()
   }
 })
 
 ipcMain.on('save-edit', (event, arg) => {
   if (arg === 'true') {
-    mainWindow.loadFile("src/index.html")
+    mainWindow.show()
     editPage.hide()
   }
 })
