@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="./contents/bootstrap/4.5.3/css/bootstrap.min.css" />
 
+    <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="css/login.css"/>
 </head>
 <body>
@@ -13,11 +14,11 @@
         <br/>
         <div class="form-group">
             <label for="txtUsr">User Name:</label>
-            <input type="text" class="form-control bg-dark text-light" id="txtUsr">
+            <input type="text" class="form-control bg-dark text-light" id="txtUsr" placeholder="Username">
         </div>
         <div class="form-group">
             <label for="txtPwd">Password:</label>
-            <input type="password" class="form-control bg-dark text-light" id="txtPwd">
+            <input type="password" class="form-control bg-dark text-light" id="txtPwd" placeholder="Password">
         </div>
         <button class="btn btn-dark" id="btn-login">Login</button>
         <label  id="lbl"></label>
@@ -55,6 +56,7 @@
             }
             else {
                 $('#lbl').text('Username or Password is incorrect')
+                $('#txtPwd').val('')
             }
         })
 
