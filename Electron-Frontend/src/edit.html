@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="./contents/bootstrap/4.5.3/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/editPage.css"/>
+</head>
+<body>
+    <div>
+        <br>
+        <div class="form-group w-50">
+            <label style="text-decoration: underline">Profile-Picture URL: </label><br/>
+            <input id="editPicture" class="form-control bg-dark text-light" placeholder="Url">
+        </div>
+        <div class="form-group w-50">
+            <label style="text-decoration: underline">Username: </label><br/>
+            <input id="editUsername" class="form-control bg-dark text-light" placeholder="Username">
+        </div>
+        <div class="form-group w-50">
+            <label style="text-decoration: underline">Age: </label><br/>
+            <input id="editAge" type="number" class="form-control bg-dark text-light" placeholder="Age">
+        </div>
+        <div class="form-group w-50">
+            <label style="text-decoration: underline">City: </label><br/>
+            <input id="editCity" class="form-control bg-dark text-light" placeholder="City you live in">
+        </div>
+        <div class="form-group w-75">
+            <label style="text-decoration: underline">Description: </label><br/>
+            <textarea id="editDesc" class="form-control bg-dark text-light"></textarea>
+        </div>
+        <div class="form-group w-" style="text-align: center">
+            <br>
+            <button class="btn btn-dark" onclick="saveProfile()">Save</button>
+        </div>
+    </div>
+
+    <script>window.jQuery = window.$ = require('jquery');</script>
+    <script src="contents/popper/1.16.3/popper.min.js"></script>
+    <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+
+    <script>
+        const loginFile = require('./js/account.json')
+        const ipcMain = require('electron').ipcRenderer;
+        var user = localStorage.getItem("account")
+
+        let saveProfile = function () {
+            if (user === "user1") {
+                if (!document.getElementById("editPicture").value === "") {
+                    loginFile.user1.profilePicture = document.getElementById("editPicture").value;
+                }
+                if (!document.getElementById("editUsername").value === "") {
+                    loginFile.user1.name = document.getElementById("editUsername").value;
+                }
+                if (!document.getElementById("editAge").value === "") {
+                    loginFile.user1.age = document.getElementById("editAge").value;
+                }
+                if (!document.getElementById("editCity").value === "") {
+                    loginFile.user1.city = document.getElementById("editCity").value;
+                }
+                if (!document.getElementById("editDesc").value === "") {
+                    loginFile.user1.description = document.getElementById("editDesc").value;
+                }
+            } else if(user === "user2") {
+                if (!document.getElementById("editPicture").value === "") {
+                    loginFile.user2.profilePicture = document.getElementById("editPicture").value;
+                }
+                if (!document.getElementById("editUsername").value === "") {
+                    loginFile.user2.name = document.getElementById("editUsername").value;
+                }
+                if (!document.getElementById("editAge").value === "") {
+                    loginFile.user2.age = document.getElementById("editAge").value;
+                }
+                if (!document.getElementById("editCity").value === "") {
+                    loginFile.user2.city = document.getElementById("editCity").value;
+                }
+                if (!document.getElementById("editDesc").value === "") {
+                    loginFile.user2.description = document.getElementById("editDesc").value;
+                }
+            }
+            ipcMain.sendSync('save-edit','true')
+        }
+    </script>
+</body>
+</html>
+

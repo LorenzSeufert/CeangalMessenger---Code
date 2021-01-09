@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="./contents/bootstrap/4.5.3/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/login.css"/>
+</head>
+<body>
+    <div class="container">
+        <br/>
+        <div class="form-group">
+            <label for="txtUsr">User Name:</label>
+            <input type="text" class="form-control bg-dark text-light" id="txtUsr" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="txtPwd">Password:</label>
+            <input type="password" class="form-control bg-dark text-light" id="txtPwd" placeholder="Password">
+        </div>
+        <button class="btn btn-dark" id="btn-login">Login</button>
+        <label  id="lbl"></label>
+    </div>
+
+
+    <script>window.jQuery = window.$ = require('jquery');</script>
+    <script src="contents/popper/1.16.3/popper.min.js"></script>
+    <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <script>
+        let $ = require('jquery')
+        let fs = require('fs')
+        const loginFile = require('./js/account.json')
+        const ipcMain = require('electron').ipcRenderer;
+
+        var user
+
+        $('#btn-login').on('click', () =>{
+            let txtUser=$('#txtUsr').val();
+            let txtPwd=$('#txtPwd').val();
+
+            // console.log(txtUser)
+            // console.log(txtPwd)
+
+            if (loginFile.user1.loginName==txtUser && loginFile.user1.password==txtPwd){
+                user = "user1"
+                localStorage.setItem("account", user)
+                ipcMain.sendSync('entry-accepted', 'true')
+
+            }
+            else if (loginFile.user2.loginName==txtUser && loginFile.user2.password==txtPwd){
+                user = "user2"
+                localStorage.setItem("account", user)
+                ipcMain.sendSync('entry-accepted', 'true')
+            }
+            else {
+                $('#lbl').text('Username or Password is incorrect')
+                $('#txtPwd').val('')
+            }
+        })
+
+
+    </script>
+</body>
+</html>
