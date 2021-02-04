@@ -1,4 +1,4 @@
-package StepDefs
+package com.dhbw.ceangal.StepDefs
 
 import io.cucumber.java8.En
 

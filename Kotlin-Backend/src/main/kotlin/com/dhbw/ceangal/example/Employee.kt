@@ -1,4 +1,4 @@
-package de.dhbw.ceangalmessenger.KotlinBackend
+package com.dhbw.ceangal.example
 
 class Employee {
     constructor() {}
