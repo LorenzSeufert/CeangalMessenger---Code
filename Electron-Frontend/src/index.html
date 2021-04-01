@@ -1,79 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Profile</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
-    <link rel="stylesheet" href="./contents/bootstrap/4.5.3/css/bootstrap.min.css"/>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="css/profile.css"/>
-    <link rel="stylesheet" href="css/main.css"/>
+    <title>Index</title>
 </head>
 <body>
-    <button class="btn btn-succes pull-right" onclick="editPage()">
-        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor"
-             xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-            <path fill-rule="evenodd"
-                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-        </svg>
-    </button>
-    <div>
-        <div class="col-sm-6 col-md-4">
-            <img id="profile" src="http://placehold.it/380x500" class="img-rounded img-responsive"/>
-        </div>
-        <br/>
-        <h2><p id="username"></p></h2>
-        <p><a id="age"></a> years old</p>
-        <p>
-            <!-- email icon -->
-            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope" fill="currentColor"
-                 xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                      d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383l-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
-            </svg>
-            <a id="email"></a>
-        </p>
-        <small><cite title="City"></cite> <a id="city"></a> <i class="glyphicon glyphicon-map-marker"></i></small>
-        <br/>
-        <p id="descript">Beschreibung:
-            <p id="description"></p>
-        </p>
-    </div>
 
-    <script>window.jQuery = window.$ = require('jquery');</script>
-    <script src="contents/popper/1.16.3/popper.min.js"></script>
-    <script src="./contents/bootstrap/4.5.3/js/bootstrap.min.js"></script>
-    <script>
-        const ipcMain = require('electron').ipcRenderer;
-        const loginFile = require('./js/account.json')
-        var account = localStorage.getItem("account")
-        var user
-
-        if (account === "user1") {
-            user = loginFile.user1
-        } else if (account === "user2") {
-            user = loginFile.user2
-        }
-
-        document.getElementById("username").innerHTML = user.name
-        document.getElementById("city").innerHTML = user.city
-        document.getElementById("email").innerHTML = user.email
-        document.getElementById("age").innerHTML = user.age
-        document.getElementById("description").innerHTML = user.description
-        document.images.namedItem("profile").src = user.profilePicture
-
-        let editPage = function () {
-            ipcMain.sendSync('edit-profile', 'true')
-        }
-
-        console.log(loginFile)
-    </script>
 </body>
 </html>
-
