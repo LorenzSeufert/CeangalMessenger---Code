@@ -3,14 +3,17 @@ const path = require('path')
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 700,
+    resizable: false,
+    icon: __dirname + '/src/pictures/CeangalLogoPNG.png',
     webPreferences: {
       preload: path.join(__dirname, 'src/preload.js')
     }
   })
 
   win.loadFile('src/index.html')
+  win.removeMenu();
 }
 
 app.whenReady().then(() => {
