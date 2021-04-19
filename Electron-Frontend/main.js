@@ -1,4 +1,5 @@
 const {app, BrowserWindow} = require('electron')
+const express = require('./src/app')
 const path = require('path')
 
 function createWindow() {
@@ -8,11 +9,9 @@ function createWindow() {
     resizable: false,
     icon: __dirname + '/src/pictures/CeangalLogoPNG.png',
     webPreferences: {
-      preload: path.join(__dirname, 'src/preload.js')
     }
   })
-
-  win.loadFile('src/login.html')
+  win.loadURL("http://localhost:3000/")
   win.removeMenu();
 }
 
