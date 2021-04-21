@@ -5,7 +5,7 @@ body{
     background: #232931;
 }
 
-.login-box{
+.signup-box{
     width: 300px;
     padding: 40px;
     position: absolute;
@@ -16,14 +16,14 @@ body{
     text-align: center;
 }
 
-.login-box h1,.login-box h4{
+.signup-box h1{
     color: white;
     text-transform: uppercase;
     font-weight: 500;
     user-select: none;
 }
 
-.login-box input[type = "text"],.login-box input[type = "password"]{
+.signup-box input[type = "text"],.signup-box input[type = "password"],.signup-box input[type = "date"]{
     background: none;
     display: block;
     margin: 20px auto;
@@ -37,12 +37,12 @@ body{
     transition: 0.25s;
 }
 
-.login-box input[type = "text"]:focus,.login-box input[type = "password"]:focus{
+.signup-box input[type = "text"]:focus,.signup-box input[type = "password"]:focus{
     width: 280px;
     border-color: #4ecca3;
 }
 
-.login-box input[type = "submit"],.login-box a{
+.signup-box input[type = "submit"]{
     background: none;
     display: block;
     margin: 20px auto;
@@ -57,7 +57,7 @@ body{
     text-decoration: none;
 }
 
-.login-box input[type = "submit"]:hover,.login-box a:hover{
+.signup-box input[type = "submit"]:hover{
     background: #4ecca3;
     text-decoration: none;
 }

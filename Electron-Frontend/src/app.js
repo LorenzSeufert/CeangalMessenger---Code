@@ -21,6 +21,19 @@ app.post("/login", function (req, res){
     console.log(req.body.password)
 });
 
+app.get("/signup", function (req, res){
+    res.render("signup");
+});
+
+app.post("/signup", function (req,res){
+    console.log(req.body.email)
+    console.log(req.body.password1)
+    console.log(req.body.password2)
+    console.log(req.body.username)
+    console.log(req.body.birthdate)
+    console.log(req.body.description)
+});
+
 app.listen(3841, function () {
     console.log("Server started on port 3841.");
 });
