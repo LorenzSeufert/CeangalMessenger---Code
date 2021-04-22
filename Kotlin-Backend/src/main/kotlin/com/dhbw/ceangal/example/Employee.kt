@@ -1,18 +1,13 @@
 package com.dhbw.ceangal.example
 
-class Employee {
-    constructor() {}
-    constructor(id: Int?, firstName: String?, lastName: String?, email: String?) : super() {
-        this.id = id
-        this.firstName = firstName
-        this.lastName = lastName
-        this.email = email
-    }
+import javax.persistence.Entity
+import javax.persistence.Id
 
-    private var id: Int? = null
-    private var firstName: String? = null
-    private var lastName: String? = null
-    private var email: String? = null
+@Entity
+class Employee(@Id val id: Int,
+               var firstName: String,
+               var lastName: String,
+               var email: String) {
 
     //getters and setters
     override fun toString(): String {
