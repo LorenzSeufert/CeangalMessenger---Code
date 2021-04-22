@@ -4,7 +4,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Entity
-class Employee(@Id val id: Int,
+class Employee(@Id val id: String,
                var firstName: String,
                var lastName: String,
                var email: String) {
