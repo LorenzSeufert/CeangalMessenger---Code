@@ -17,4 +17,12 @@ open class EmployeeController {
         val hello = "hello"
         return ResponseEntity(hello, HttpStatus.OK)
     }
+    @GetMapping(value = ["/something"])
+    fun getSomething(): ResponseEntity<String>
+    {
+        //val employeeList = ArrayList<Employee>()
+        //employeeList.add(Employee(1, "lok", "gupta", "bla@bla"))
+        val something = "something"
+        return ResponseEntity(something, HttpStatus.OK)
+    }
 }
