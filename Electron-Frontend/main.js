@@ -6,7 +6,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 700,
-    resizable: false,
+    resizable: true,
     icon: __dirname + '/src/pictures/CeangalLogoPNG.png',
     webPreferences: {
     }
