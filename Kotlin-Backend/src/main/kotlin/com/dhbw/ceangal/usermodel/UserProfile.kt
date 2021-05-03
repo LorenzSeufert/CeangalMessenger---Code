@@ -8,13 +8,16 @@ import javax.persistence.Id
 @Entity
 class UserProfile(
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO) val username: String,
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    val id: Long,
+    var username: String,
     val password: String,
-    val email: String,
-    val birthdate: String
+    var email: String,
+    val birthdate: String,
+    var description: String
 )
 {
     override fun toString(): String {
-        return "UserProfile(username='$username', password='$password', email='$email', birthdate='$birthdate')"
+        return "UserProfile(id='$id', username='$username', password='$password', email='$email', birthdate='$birthdate', description='$description')"
     }
 }
