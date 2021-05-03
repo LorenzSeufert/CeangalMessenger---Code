@@ -13,7 +13,7 @@ class UserService: UserInterface {
         return userRepository.save(userProfile)
     }
 
-    override fun editUser(userProfile: UserProfile, id: String): UserProfile {
+    override fun editUser(userProfile: UserProfile, id: Long): UserProfile {
         val optionalUser = userRepository.findById(id)
 
         if (optionalUser.isEmpty) {
@@ -25,10 +25,10 @@ class UserService: UserInterface {
         user.email = userProfile.email
         user.description = userProfile.description
 
-        return user
+        return userRepository.save(user)
     }
 
-    override fun deleteUser(id: String) {
+    override fun deleteUser(id: Long) {
         if (userRepository.findById(id).isEmpty) {
             throw UserNotFoundException()
         }

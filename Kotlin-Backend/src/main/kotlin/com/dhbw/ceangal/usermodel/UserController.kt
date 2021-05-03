@@ -19,13 +19,13 @@ class UserController {
     }
 
     @PutMapping(value = ["/user/editUser/{id}"])
-    fun editUser(@RequestBody userProfile:UserProfile, @PathVariable id: String): ResponseEntity<UserProfile> {
+    fun editUser(@RequestBody userProfile:UserProfile, @PathVariable id: Long): ResponseEntity<UserProfile> {
         val user = userService.editUser(userProfile, id)
         return ResponseEntity(user, HttpStatus.OK)
     }
 
     @DeleteMapping(value = ["/user/deleteUser/{id}"])
-    fun deleteUser(@PathVariable id: String): ResponseEntity<String> {
+    fun deleteUser(@PathVariable id: Long): ResponseEntity<String> {
         userService.deleteUser(id)
         return ResponseEntity("User was succesful deleted", HttpStatus.OK)
     }

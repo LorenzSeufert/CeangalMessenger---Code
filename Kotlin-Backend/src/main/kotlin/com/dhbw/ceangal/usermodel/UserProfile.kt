@@ -9,7 +9,7 @@ import javax.persistence.Id
 class UserProfile(
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    val id: Long,
+    var id: Long = 0L,
     var username: String,
     val password: String,
     var email: String,
@@ -17,6 +17,7 @@ class UserProfile(
     var description: String
 )
 {
+
     override fun toString(): String {
         return "UserProfile(id='$id', username='$username', password='$password', email='$email', birthdate='$birthdate', description='$description')"
     }
