@@ -4,6 +4,7 @@ import com.dhbw.ceangal.usermodel.UserProfile
 import com.dhbw.ceangal.usermodel.UserRepository
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +28,7 @@ class UserIntegrationTest {
     @Autowired
     private lateinit var userRepository: UserRepository
 
-    @BeforeAll
+    @BeforeEach
     fun clearDatabase() {
         userRepository.deleteAll()
     }
@@ -58,7 +59,7 @@ class UserIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     """{
-                        "username": 3333
+                        "usernam: 3333
                     }""".trimIndent())
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest)
