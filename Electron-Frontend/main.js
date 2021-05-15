@@ -1,16 +1,19 @@
 const {app, BrowserWindow} = require('electron')
+require('electron-reload')(__dirname);
+const express = require('./src/app')
 const path = require('path')
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1100,
+    height: 800,
+    resizable: true,
+    icon: __dirname + '/src/pictures/CeangalLogoPNG.png',
     webPreferences: {
-      preload: path.join(__dirname, 'src/preload.js')
     }
   })
-
-  win.loadFile('src/index.html')
+  win.loadURL("http://localhost:3841/")
+  win.removeMenu();
 }
 
 app.whenReady().then(() => {
