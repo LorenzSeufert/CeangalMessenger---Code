@@ -1,11 +1,12 @@
 const {app, BrowserWindow} = require('electron')
+require('electron-reload')(__dirname);
 const express = require('./src/app')
 const path = require('path')
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 1100,
+    height: 800,
     resizable: true,
     icon: __dirname + '/src/pictures/CeangalLogoPNG.png',
     webPreferences: {

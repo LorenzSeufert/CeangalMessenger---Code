@@ -26,12 +26,13 @@ app.get("/signup", function (req, res){
 });
 
 app.post("/signup", function (req,res){
-    console.log(req.body.email)
-    console.log(req.body.password1)
-    console.log(req.body.password2)
-    console.log(req.body.username)
-    console.log(req.body.birthdate)
-    console.log(req.body.description)
+    // console.log(req.body.email)
+    // console.log(req.body.password1)
+    // console.log(req.body.password2)
+    // console.log(req.body.username)
+    // console.log(req.body.birthdate)
+    // console.log(req.body.description)
+    console.log(req)
 });
 
 app.listen(3841, function () {
