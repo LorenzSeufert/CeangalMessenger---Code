@@ -13,16 +13,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.get("/", function (req,res){
-    res.render("login");
+    res.render("login")
 });
 
 app.post("/login", function (req, res){
     console.log(req.body.username)
     console.log(req.body.password)
+    res.render("profile")
 });
 
 app.get("/signup", function (req, res){
-    res.render("signup");
+    res.render("signup")
 });
 
 app.post("/signup", function (req,res){

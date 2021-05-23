@@ -26,7 +26,7 @@
     "productName": "CeangalMessenger",
     "win": {
       "target": "portable",
-      "icon": "src/pictures/CeangalIcon.ico"
+      "icon": "src/img/CeangalIcon.ico"
     },
     "directories": {
       "buildResources": "Electron-Frontend/src"
