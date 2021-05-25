@@ -6,17 +6,12 @@
     <title>CeangalMessenger</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/navbar.css">
 </head>
 <body>
 
-    <span class="navbtn" onclick="openNav()">&#9776; Navigation</span>
 
-    <div id="navbar" style="user-select: none;-webkit-user-drag: none" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="">Friends</a>
-        <a href="">Chats</a>
-        <a href="">Edit Profile</a>
-    </div>
+    <%- include("partials/navbar") -%>
 
     <div class="container">
         <div class="row">

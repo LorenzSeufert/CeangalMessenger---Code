@@ -36,6 +36,14 @@ app.post("/signup", function (req,res){
     console.log(req)
 });
 
+app.get("/editProfile", function (req,res){
+   res.render("editProfile")
+});
+
+app.get("/getProfile", function (req,res){
+    res.render("profile")
+});
+
 app.listen(3841, function () {
     console.log("Server started on port 3841.");
 });
