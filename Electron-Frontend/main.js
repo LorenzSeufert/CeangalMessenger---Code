@@ -5,9 +5,9 @@ const path = require('path')
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 900,
-    height: 700,
-    resizable: true,
+    width: 930,
+    height: 730,
+    resizable: false,
     icon: __dirname + '/src/img/CeangalLogoPNG.png',
     webPreferences: {
       nodeIntegration: true,

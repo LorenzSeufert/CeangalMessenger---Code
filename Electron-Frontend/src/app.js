@@ -36,12 +36,22 @@ app.post("/signup", function (req,res){
     console.log(req)
 });
 
-app.get("/editProfile", function (req,res){
+app.get("/editProfilePage", function (req,res){
    res.render("editProfile")
 });
 
-app.get("/getProfile", function (req,res){
+app.get("/profilePage", function (req,res){
     res.render("profile")
+});
+
+app.post("/saveData", function (req,res){
+    console.log(req.body.newUsername)
+    console.log(req.body.newEmail)
+    console.log(req.body.newDescription)
+});
+
+app.post("/deleteAccount", function (req,res){
+    console.log("DELETE ACCOUNT")
 });
 
 app.listen(3841, function () {

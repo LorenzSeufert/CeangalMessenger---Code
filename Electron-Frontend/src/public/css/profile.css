@@ -6,7 +6,7 @@ body{
 }
 
 .card{
-    background: #232931;
+    background: #393e46;
     color: white;
     border-color: #4ecca3;
 }
@@ -26,8 +26,4 @@ body{
     height: auto;
     transition: .5s ease;
     backface-visibility: hidden;
-}
-
-.image-container:hover .image {
-    opacity: 0.3;
 }
