@@ -9,21 +9,21 @@ app.use(express.static(__dirname + "/public"));
 app.set('views', path.join(__dirname, '../src/views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.disable('x-powered-by');
 
 
 app.get("/", function (req,res){
-    res.render("login")
+    res.render("loginPage")
 });
 
 app.post("/login", function (req, res){
     console.log(req.body.username)
     console.log(req.body.password)
-    res.render("profile")
+    res.render("profilePage")
 });
 
 app.get("/signup", function (req, res){
-    res.render("signup")
+    res.render("signupPage")
 });
 
 app.post("/signup", function (req,res){
@@ -36,12 +36,20 @@ app.post("/signup", function (req,res){
     console.log(req)
 });
 
-app.get("/editProfilePage", function (req,res){
-   res.render("editProfile")
+app.get("/editProfile", function (req,res){
+   res.render("editProfilePage")
 });
 
-app.get("/profilePage", function (req,res){
-    res.render("profile")
+app.get("/profile", function (req,res){
+    res.render("profilePage")
+});
+
+app.get("/friends", function (req,res){
+    res.render("friendPage")
+});
+
+app.get("/chats", function (req,res){
+    res.render("chatPage")
 });
 
 app.post("/saveData", function (req,res){
