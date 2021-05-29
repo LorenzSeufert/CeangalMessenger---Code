@@ -23,7 +23,7 @@ body{
     user-select: none;
 }
 
-.auth-box input[type = "text"],.auth-box input[type = "password"],.auth-box input[type = "date"]{
+.auth-box input[type = "text"],.auth-box input[type = "password"],.auth-box input[type = "date"],.auth-box input[type = "email"]{
     background: none;
     display: block;
     margin: 20px auto;
@@ -37,7 +37,7 @@ body{
     transition: 0.25s;
 }
 
-.auth-box input[type = "text"]:focus,.auth-box input[type = "password"]:focus{
+.auth-box input[type = "text"]:focus,.auth-box input[type = "password"]:focus,.auth-box input[type = "email"]:focus{
     width: 280px;
     border-color: #4ecca3;
 }
