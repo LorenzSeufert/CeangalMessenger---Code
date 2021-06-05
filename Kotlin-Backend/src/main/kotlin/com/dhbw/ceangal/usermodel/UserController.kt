@@ -6,11 +6,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
+/**
+ * This class is controls the user. It contains REST Services for creating, editing and deleting a user.
+ */
 @Controller
 @RequestMapping("/api")
 class UserController {
     @Autowired
     private lateinit var userService: UserService
+
     /**
      * This function represents the REST-entry for creating a user
      *
