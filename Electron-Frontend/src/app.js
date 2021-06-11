@@ -13,13 +13,17 @@ app.disable('x-powered-by');
 
 
 app.get("/", function (req,res){
-    res.render("loginPage")
+    res.render("loginPage",{
+        error: false
+    })
 });
 
 app.post("/login", function (req, res){
     console.log(req.body.username)
     console.log(req.body.password)
-    res.render("profilePage")
+    res.render("loginPage",{
+        error: 'Something went wrong'
+    })
 });
 
 app.get("/signup", function (req, res){

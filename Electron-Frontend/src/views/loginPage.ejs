@@ -16,5 +16,16 @@
         <h4>or</h4>
         <a href="/signup" >Sign Up</a>
     </form>
+
+    <script src="sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        const swal = require("sweetalert2");
+
+        if ("<%=error%>" !== "false") {
+            swal.fire("Error","<%= error%>","error")
+        }
+
+    </script>
 </body>
 </html>
