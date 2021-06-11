@@ -1,0 +1,48 @@
+body{
+    padding-top: 25px;
+    padding-bottom: 50px;
+    background: #232931;
+    font-family: sans-serif, Arial;
+}
+
+.card{
+    background: #393e46;
+    color: white;
+    border-color: #4ecca3;
+}
+
+.container{
+    padding-top: 30px;
+}
+
+.pageHeading h1{
+    margin-left: 20px;
+    text-decoration: underline;
+}
+
+.actionBtn input[type = "submit"]{
+    background: none;
+    display: block;
+    text-align: center;
+    border: 2px solid #4ecca3;
+    padding: 10px 40px;
+    outline: none;
+    color: white;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.actionBtn input[type = "submit"]:hover{
+    background: #4ecca3;
+    text-decoration: none;
+}
+
+#contentCard{
+    background: #232931;
+}
+
+#contentCard h3 {
+    text-decoration: underline;
+}
