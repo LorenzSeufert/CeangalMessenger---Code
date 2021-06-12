@@ -2,8 +2,9 @@ package com.dhbw.ceangal.channel
 
 import com.dhbw.ceangal.error.ChannelNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 import java.util.*
-
+@Service
 class ChannelService: ChannelInterface {
     @Autowired
     lateinit var channelRepository: ChannelRepository
@@ -18,13 +19,16 @@ class ChannelService: ChannelInterface {
         if (optChannel.isEmpty){
             throw ChannelNotFoundException()
         }
-        TODO("Not fully implemented")
-
+        val channel: Channel = optChannel.get()
+        channel.channelName = pNewName
     }
 
-    override fun sendMessage(pMessage: String) {
-        TODO("Not yet implemented")
+ /*   override fun sendMessage(pID: Long, pMessage: String) {
+        if (channelRepository.findById(pID).isEmpty) {
+            throw UserNotFoundException()
+        }
+        actChannel = channelRepository.findByID(pID)
     }
-
+*/
 
 }
