@@ -23,9 +23,16 @@
         const swal = require("sweetalert2");
 
         if ("<%=error%>" !== "false") {
-            swal.fire("Error","<%= error%>","error")
+            swal.fire({
+                title: 'Error',
+                text: "<%= error%>",
+                icon: 'info',
+                iconColor: '#4ecca3',
+                confirmButtonColor: '#4ecca3',
+                allowOutsideClick: false
+            })
         }
-
     </script>
+
 </body>
 </html>
