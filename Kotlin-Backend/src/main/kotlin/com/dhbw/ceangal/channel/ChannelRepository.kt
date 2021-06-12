@@ -1,7 +1,7 @@
-package com.dhbw.ceangal.example
+package com.dhbw.ceangal.channel
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface EmployeeRepository : JpaRepository<Employee, String>
+interface ChannelRepository : JpaRepository <Channel, Long>
