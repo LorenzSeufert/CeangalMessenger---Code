@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
  * This class executes user commands. It functions for creating, editing and deleting a user.
  */
 @Service
-class UserService: UserInterface {
+class UserService:  UserInterface {
     @Autowired
     lateinit var userRepository: UserRepository
     @Autowired
