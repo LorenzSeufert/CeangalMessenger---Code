@@ -1,9 +1,7 @@
 package com.dhbw.ceangal.usermodel
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import com.dhbw.ceangal.websocket.model.TextChannel
+import javax.persistence.*
 
 @Entity
 class UserProfile(
@@ -14,11 +12,17 @@ class UserProfile(
     val password: String,
     var email: String,
     val birthdate: String,
-    var description: String
+    var description: String,
+    @OneToMany
+    val friends: MutableList<UserProfile> = mutableListOf(),
+    @ManyToMany
+    val chatRooms: MutableList<TextChannel> = mutableListOf()
+
 )
 {
 
+
     override fun toString(): String {
-        return "UserProfile(id='$id', username='$username', password='$password', email='$email', birthdate='$birthdate', description='$description')"
+        return "UserProfile(id=$id, username='$username', password='$password', email='$email', birthdate='$birthdate', description='$description', friends=$friends)"
     }
 }
