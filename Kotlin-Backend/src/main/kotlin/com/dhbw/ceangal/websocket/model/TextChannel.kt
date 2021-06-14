@@ -1,7 +1,6 @@
 package com.dhbw.ceangal.websocket.model
 
 import com.dhbw.ceangal.usermodel.UserProfile
-import com.dhbw.ceangal.websocket.model.Message
 import javax.persistence.*
 
 @Entity
@@ -12,7 +11,7 @@ class TextChannel(
     @ManyToMany
     val users: MutableList<UserProfile> = mutableListOf(),
     //@ElementCollection(targetClass = Message::class, fetch = FetchType.EAGER)
-    @OneToMany
+    @OneToMany(targetEntity = Message::class)
     val messages: MutableList<Message> = mutableListOf()
 ) {
 }

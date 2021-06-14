@@ -1,3 +1,4 @@
+/*
 package com.dhbw.ceangal.websocket.config
 
 import com.dhbw.ceangal.websocket.testing.WebSocketConnectHandler
@@ -25,4 +26,4 @@ open class WebSocketHandlersConfig<S : Session> {
     ): WebSocketDisconnectHandler<S> {
         return WebSocketDisconnectHandler(messagingTemplate, repository)
     }
-}
+}*/
