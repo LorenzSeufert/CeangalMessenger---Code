@@ -24,7 +24,7 @@ class UserController {
     @PostMapping(value = ["/user/createUser"])
     fun createUser(@RequestBody userProfile:UserProfile): ResponseEntity<String> {
         userService.createUser(userProfile)
-        return ResponseEntity("User creating was succesful.", HttpStatus.OK)
+        return ResponseEntity("User creating was successful.", HttpStatus.OK)
     }
     /**
      * This function represents the REST-entry for editing a user
