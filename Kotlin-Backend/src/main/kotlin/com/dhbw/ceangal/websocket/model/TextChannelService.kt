@@ -34,5 +34,4 @@ class TextChannelService : TextChannelInterface {
 
         textChannelRepository.deleteById(id)
     }
-    }
 }
