@@ -31,8 +31,14 @@ class UserService:  UserInterface {
      * @param id the id of the user whose data should be changed
      * @return the saved UserProfile
      */
-    override fun editUser(userProfile: UserProfile, id: Long): UserProfile {
-        val optionalUser = userRepository.findById(id)
+    override fun editUser(userProfile: UserProfile, id: String): UserProfile {
+        val optionalUserSession = userSessionRepository.findById(id)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+        val optionalUser = userRepository.findById(userId)
 
         if (optionalUser.isEmpty) {
             throw UserNotFoundException()
@@ -58,12 +64,19 @@ class UserService:  UserInterface {
      *
      * @param id the id of the user who should be deleted
      */
-    override fun deleteUser(id: Long) {
-        if (userRepository.findById(id).isEmpty) {
+    override fun deleteUser(id: String) {
+        val optionalUserSession = userSessionRepository.findById(id)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+
+        if (userRepository.findById(userId).isEmpty) {
             throw UserNotFoundException()
         }
 
-        userRepository.deleteById(id)
+        userRepository.deleteById(userId)
     }
     override fun login(userProfile: UserProfile): String {
         val userList = userRepository.findAll()

@@ -33,8 +33,8 @@ class UserController {
      * @param id the id of the user whose data should be changed
      * @return responseMessage the full changed user and status which is send back as a response
      */
-    @PutMapping(value = ["/user/editUser/{id}"])
-    fun editUser(@RequestBody userProfile:UserProfile, @PathVariable id: Long): ResponseEntity<UserProfile> {
+    @PutMapping(value = ["/user/editUser"])
+    fun editUser(@RequestBody userProfile:UserProfile, @RequestHeader id: String): ResponseEntity<UserProfile> {
         val user = userService.editUser(userProfile, id)
         return ResponseEntity(user, HttpStatus.OK)
     }
@@ -45,10 +45,10 @@ class UserController {
      * @param id the id of the user who should be deleted
      * @return responseMessage the message and status which is send back as a response
      */
-    @DeleteMapping(value = ["/user/deleteUser/{id}"])
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<String> {
+    @DeleteMapping(value = ["/user/deleteUser"])
+    fun deleteUser(@RequestHeader id: String): ResponseEntity<String> {
         userService.deleteUser(id)
-        return ResponseEntity("User was succesful deleted", HttpStatus.OK)
+        return ResponseEntity("User was successful deleted", HttpStatus.OK)
     }
 
     /**
@@ -77,9 +77,9 @@ class UserController {
      * @param id the id of the user who should be deleted
      * @return responseMessage the message and status which is send back as a response
      */
-    @DeleteMapping(value = ["/user/logout/{sessionId}"])
-    fun logout(@PathVariable sessionId: String): ResponseEntity<String> {
-        userService.logout(sessionId)
+    @DeleteMapping(value = ["/user/logout"])
+    fun logout(@RequestHeader id: String): ResponseEntity<String> {
+        userService.logout(id)
         return ResponseEntity("You have logged out successfully", HttpStatus.OK)
     }
 }
