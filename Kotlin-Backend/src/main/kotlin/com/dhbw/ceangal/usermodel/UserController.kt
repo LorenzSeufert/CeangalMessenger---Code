@@ -28,13 +28,13 @@ class UserController {
     }
     /**
      * This function represents the REST-entry for editing a user
-     *-
+     *
      * @param userProfile data which contains the requested fields to be changed
      * @param id the id of the user whose data should be changed
      * @return responseMessage the full changed user and status which is send back as a response
      */
-    @PutMapping(value = ["/user/editUser/{id}"])
-    fun editUser(@RequestBody userProfile:UserProfile, @PathVariable id: Long): ResponseEntity<UserProfile> {
+    @PutMapping(value = ["/user/editUser"])
+    fun editUser(@RequestBody userProfile:UserProfile, @RequestHeader id: String): ResponseEntity<UserProfile> {
         val user = userService.editUser(userProfile, id)
         return ResponseEntity(user, HttpStatus.OK)
     }
@@ -48,7 +48,7 @@ class UserController {
     @DeleteMapping(value = ["/user/deleteUser"])
     fun deleteUser(@RequestHeader id: String): ResponseEntity<String> {
         userService.deleteUser(id)
-        return ResponseEntity("User was succesful deleted", HttpStatus.OK)
+        return ResponseEntity("User was successful deleted", HttpStatus.OK)
     }
 
     /**
