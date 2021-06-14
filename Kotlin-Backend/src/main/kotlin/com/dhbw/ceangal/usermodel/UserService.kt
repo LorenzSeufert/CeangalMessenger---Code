@@ -95,6 +95,10 @@ class UserService: UserInterface {
         return "0"
     }
     override fun logout(sessionId: String) {
-
+        if (userSessionRepository.findById(sessionId).isEmpty)
+        {
+            throw UserNotFoundException()
+        }
+        userSessionRepository.deleteById(sessionId)
     }
 }
