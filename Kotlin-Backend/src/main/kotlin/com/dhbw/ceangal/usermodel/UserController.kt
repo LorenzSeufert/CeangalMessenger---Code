@@ -24,7 +24,7 @@ class UserController {
     @PostMapping(value = ["/user/createUser"])
     fun createUser(@RequestBody userProfile:UserProfile): ResponseEntity<String> {
         userService.createUser(userProfile)
-        return ResponseEntity("User creating was succesful.", HttpStatus.OK)
+        return ResponseEntity("User creating was successful.", HttpStatus.OK)
     }
     /**
      * This function represents the REST-entry for editing a user
@@ -49,5 +49,37 @@ class UserController {
     fun deleteUser(@PathVariable id: Long): ResponseEntity<String> {
         userService.deleteUser(id)
         return ResponseEntity("User was succesful deleted", HttpStatus.OK)
+    }
+
+    /**
+     * This function represents the REST-entry for logging in
+     *
+     * @param userProfile the user to be logged in with email and password
+     * @return responseMessage the message and status which is send back as a response
+     */
+    @PostMapping(value = ["/user/login"])
+    fun login(@RequestBody userProfile:UserProfile): ResponseEntity<String> {
+        val sessionId = userService.login(userProfile)
+        if("0".equals(sessionId))
+        {
+            return ResponseEntity(sessionId, HttpStatus.NOT_FOUND)
+        }
+        if("1".equals(sessionId))
+        {
+            return ResponseEntity(sessionId, HttpStatus.FORBIDDEN)
+        }
+        return ResponseEntity(sessionId, HttpStatus.OK)
+    }
+
+    /**
+     * This function represents the REST-entry for logging out
+     *
+     * @param id the id of the user who should be deleted
+     * @return responseMessage the message and status which is send back as a response
+     */
+    @DeleteMapping(value = ["/user/logout/{sessionId}"])
+    fun logout(@PathVariable sessionId: String): ResponseEntity<String> {
+        userService.logout(sessionId)
+        return ResponseEntity("You have logged out successfully", HttpStatus.OK)
     }
 }

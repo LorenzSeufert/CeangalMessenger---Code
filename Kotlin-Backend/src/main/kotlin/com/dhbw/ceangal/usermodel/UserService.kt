@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service
  * This class executes user commands. It functions for creating, editing and deleting a user.
  */
 @Service
-class UserService: UserInterface {
+class UserService:  UserInterface {
     @Autowired
     lateinit var userRepository: UserRepository
+    @Autowired
+    lateinit var userSessionRepository: UserSessionRepository
 
     /**
      * This function adds the user to the Repository
@@ -37,10 +39,18 @@ class UserService: UserInterface {
         }
         val user = optionalUser.get()
 
-        user.username = userProfile.username
-        user.email = userProfile.email
-        user.description = userProfile.description
-
+        if(userProfile.username != "")
+        {
+            user.username = userProfile.username
+        }
+        if(userProfile.email != "")
+        {
+            user.email = userProfile.email
+        }
+        if(userProfile.description != "")
+        {
+            user.description = userProfile.description
+        }
         return userRepository.save(user)
     }
     /**
@@ -54,5 +64,41 @@ class UserService: UserInterface {
         }
 
         userRepository.deleteById(id)
+    }
+    override fun login(userProfile: UserProfile): String {
+        val userList = userRepository.findAll()
+        userList.forEach {
+            if(it.email.equals(userProfile.email))
+            {
+                if(it.password.equals(userProfile.password))
+                {
+                    val userId = it.id
+                    val userSession = UserSession("", userId)
+                    userSessionRepository.save(userSession)
+
+                    var sessionId = ""
+                    val allSessions = userSessionRepository.findAll()
+                    allSessions.forEach {
+                        if(it.userId.equals(userId))
+                        {
+                            sessionId = it.sessionId
+                        }
+                    }
+                    return sessionId
+                }
+                else
+                {
+                    return "1"
+                }
+            }
+        }
+        return "0"
+    }
+    override fun logout(sessionId: String) {
+        if (userSessionRepository.findById(sessionId).isEmpty)
+        {
+            throw UserNotFoundException()
+        }
+        userSessionRepository.deleteById(sessionId)
     }
 }
