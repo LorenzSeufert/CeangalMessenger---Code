@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CeangalMessenger</title>
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+    <form class="auth-box" action="/login" method="post">
+        <h1>Log In</h1>
+        <input type="email" name="username" placeholder="Email">
+        <input type="password" name="password" placeholder="Password">
+        <input type="submit" name="" value="Log In">
+        <h4>or</h4>
+        <a href="/signup" >Sign Up</a>
+    </form>
+
+    <script src="sweetalert2/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        const swal = require("sweetalert2");
+
+        if ("<%=error%>" !== "false") {
+            swal.fire({
+                title: 'Ohh something went wrong!',
+                text: "<%= errorMessage%>",
+                icon: "<%= error%>",
+                iconColor: '#4ecca3',
+                confirmButtonColor: '#4ecca3',
+                allowOutsideClick: false
+            })
+        }
+    </script>
+
+</body>
+</html>

@@ -1,11 +1,11 @@
 body{
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: sans-serif, Arial;
     background: #232931;
 }
 
-.signup-box{
+.auth-box{
     width: 300px;
     padding: 40px;
     position: absolute;
@@ -16,14 +16,14 @@ body{
     text-align: center;
 }
 
-.signup-box h1{
+.auth-box h1,.auth-box h4{
     color: white;
     text-transform: uppercase;
     font-weight: 500;
     user-select: none;
 }
 
-.signup-box input[type = "text"],.signup-box input[type = "password"],.signup-box input[type = "date"]{
+.auth-box input[type = "text"],.auth-box input[type = "password"],.auth-box input[type = "date"],.auth-box input[type = "email"]{
     background: none;
     display: block;
     margin: 20px auto;
@@ -37,12 +37,12 @@ body{
     transition: 0.25s;
 }
 
-.signup-box input[type = "text"]:focus,.signup-box input[type = "password"]:focus{
+.auth-box input[type = "text"]:focus,.auth-box input[type = "password"]:focus,.auth-box input[type = "email"]:focus{
     width: 280px;
     border-color: #4ecca3;
 }
 
-.signup-box input[type = "submit"]{
+.auth-box input[type = "submit"],.auth-box a{
     background: none;
     display: block;
     margin: 20px auto;
@@ -57,7 +57,7 @@ body{
     text-decoration: none;
 }
 
-.signup-box input[type = "submit"]:hover{
+.auth-box input[type = "submit"]:hover,.auth-box a:hover{
     background: #4ecca3;
     text-decoration: none;
 }
