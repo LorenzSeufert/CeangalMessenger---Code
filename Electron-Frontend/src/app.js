@@ -140,7 +140,7 @@ app.post("/signup", function (req,res){
     if (req.body.password1 !== req.body.password2){
         res.render("signupPage",{
             error: "error",
-            errorMessage: "Your passwords aren't matching!",
+            errorMessage: "Your passwords are not matching!",
             email: req.body.email,
             password1: "",
             password2: "",
