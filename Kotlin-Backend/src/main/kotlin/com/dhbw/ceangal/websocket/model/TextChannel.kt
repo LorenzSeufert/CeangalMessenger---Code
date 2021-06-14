@@ -8,6 +8,7 @@ class TextChannel(
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     var id: Long = 0L,
+    var name: String,
     @ManyToMany
     val users: MutableList<UserProfile> = mutableListOf(),
     //@ElementCollection(targetClass = Message::class, fetch = FetchType.EAGER)

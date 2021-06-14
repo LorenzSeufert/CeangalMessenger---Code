@@ -19,8 +19,8 @@ class UserService: UserInterface {
         if (optionalUser.isEmpty) {
             throw UserNotFoundException()
         }
-        val user = optionalUser.get()
 
+        val user = optionalUser.get()
         user.username = userProfile.username
         user.email = userProfile.email
         user.description = userProfile.description
