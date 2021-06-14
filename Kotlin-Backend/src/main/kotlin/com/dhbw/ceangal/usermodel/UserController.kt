@@ -28,7 +28,7 @@ class UserController {
     }
     /**
      * This function represents the REST-entry for editing a user
-     *
+     *-
      * @param userProfile data which contains the requested fields to be changed
      * @param id the id of the user whose data should be changed
      * @return responseMessage the full changed user and status which is send back as a response
