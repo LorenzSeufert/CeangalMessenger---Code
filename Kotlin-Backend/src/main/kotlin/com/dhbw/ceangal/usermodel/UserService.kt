@@ -114,4 +114,21 @@ class UserService:  UserInterface {
         }
         userSessionRepository.deleteById(sessionId)
     }
+    fun getUser(sessionId: String):UserProfile{
+        val optionalUserSession = userSessionRepository.findById(sessionId)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+
+        if (userRepository.findById(userId).isEmpty) {
+            throw UserNotFoundException()
+        }
+
+        var user = userRepository.findById(userId).get()
+        user.password = ""
+
+        return user
+    }
 }

@@ -25,7 +25,7 @@
                                     <img src="file:///src/img/ExamplePicture.png" id="imgProfile" style="width: 200px; height: 200px" class="img-thumbnail" />
                                 </div>
                                 <div class="userData ml-3 mt-3">
-                                    <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold; margin-left: 35px">Max Mustermann</h2>
+                                    <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold; margin-left: 35px"><%= username%></h2>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                                                 <label style="font-weight:bold;">E-Mail:</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                maxmustermann@example.de
+                                                <%= email%>
                                             </div>
                                         </div>
                                         <hr/>
@@ -51,7 +51,7 @@
                                                 <label style="font-weight:bold;">Username:</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                Max Mustermann
+                                                <%= username%>
                                             </div>
                                         </div>
                                         <hr/>
@@ -62,7 +62,7 @@
                                                 <label style="font-weight:bold;">Birth Date:</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                June 18, 2001
+                                                <%= birthdate%>
                                             </div>
                                         </div>
                                         <hr/>
@@ -73,7 +73,7 @@
                                                 <label style="font-weight:bold;">Description:</label>
                                             </div>
                                             <div class="col-md-8 col-6">
-                                                I like turtles and cats!
+                                                <%= description%>
                                             </div>
                                         </div>
                                         <hr/>

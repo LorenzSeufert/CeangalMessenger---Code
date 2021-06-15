@@ -1,5 +1,5 @@
 const {app, BrowserWindow, protocol} = require('electron')
-require('electron-reload')(__dirname);
+// require('electron-reload')(__dirname);
 const express = require('./src/app')
 const path = require('path')
 

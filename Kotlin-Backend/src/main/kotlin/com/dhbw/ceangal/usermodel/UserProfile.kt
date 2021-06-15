@@ -19,7 +19,7 @@ class UserProfile(
     @GeneratedValue(strategy= GenerationType.AUTO)
     var id: Long = 0L,
     var username: String = "",
-    val password: String = "",
+    var password: String = "",
     var email: String = "",
     val birthdate: String = "",
     var description: String = ""
