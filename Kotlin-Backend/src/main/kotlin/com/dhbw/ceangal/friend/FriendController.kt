@@ -1,7 +1,5 @@
-package com.dhbw.ceangal.channel
+package com.dhbw.ceangal.friend
 
-
-import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,15 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 @RequestMapping("/api")
-class ChannelController
-{
+class FriendController {
     @Autowired
-    private lateinit var channelService: ChannelService
+    private lateinit var friendService: FriendService
 
-    @PostMapping(path = ["/createChannel"])
-    fun createChannel(@RequestBody channel: Channel): ResponseEntity<String> {
-        channelService.createChannel(channel)
-        return ResponseEntity("Channel was created successfully.", HttpStatus.OK)
+    @PostMapping(path = ["/addFriend"])
+    fun addFriend(@RequestBody friend: Friend): ResponseEntity<String>{
+        friendService.addFriend(friend)
+        return ResponseEntity("Friend was created successfully.", HttpStatus.OK)
     }
 }
-
