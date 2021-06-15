@@ -4,35 +4,148 @@ import com.dhbw.ceangal.error.UserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+/**
+ * This class executes user commands. It functions for creating, editing and deleting a user.
+ */
 @Service
-class UserService: UserInterface {
+class UserService:  UserInterface {
     @Autowired
     lateinit var userRepository: UserRepository
+    @Autowired
+    lateinit var userSessionRepository: UserSessionRepository
 
+    /**
+     * This function adds the user to the Repository
+     *
+     * @param userProfile the user to be created
+     * @return the saved UserProfile
+     */
     override fun createUser(userProfile: UserProfile): UserProfile {
         return userRepository.save(userProfile)
     }
 
-    override fun editUser(userProfile: UserProfile, id: Long): UserProfile {
-        val optionalUser = userRepository.findById(id)
+    /**
+     * This function edits the user in the Repository
+     *
+     * @param userProfile the user to be created
+     * @param id the id of the user whose data should be changed
+     * @return the saved UserProfile
+     */
+    override fun editUser(userProfile: UserProfile, id: String): UserProfile {
+        val optionalUserSession = userSessionRepository.findById(id)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+        val optionalUser = userRepository.findById(userId)
 
         if (optionalUser.isEmpty) {
             throw UserNotFoundException()
         }
         val user = optionalUser.get()
 
-        user.username = userProfile.username
-        user.email = userProfile.email
-        user.description = userProfile.description
-
+        if(userProfile.username != "")
+        {
+            user.username = userProfile.username
+        }
+        if(userProfile.email != "")
+        {
+            user.email = userProfile.email
+        }
+        if(userProfile.description != "")
+        {
+            user.description = userProfile.description
+        }
         return userRepository.save(user)
     }
+    /**
+     * This function deletes the user from the Repository
+     *
+     * @param id the id of the user who should be deleted
+     */
+    override fun deleteUser(id: String) {
+        val optionalUserSession = userSessionRepository.findById(id)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
 
-    override fun deleteUser(id: Long) {
-        if (userRepository.findById(id).isEmpty) {
+        if (userRepository.findById(userId).isEmpty) {
             throw UserNotFoundException()
         }
 
-        userRepository.deleteById(id)
+        userRepository.deleteById(userId)
+    }
+    override fun login(userProfile: UserProfile): String {
+        val userList = userRepository.findAll()
+        userList.forEach {
+            if(it.email.equals(userProfile.email))
+            {
+                if(it.password.equals(userProfile.password))
+                {
+                    val userId = it.id
+                    val userSession = UserSession("", userId)
+                    userSessionRepository.save(userSession)
+
+                    var sessionId = ""
+                    val allSessions = userSessionRepository.findAll()
+                    allSessions.forEach {
+                        if(it.userId.equals(userId))
+                        {
+                            sessionId = it.sessionId
+                        }
+                    }
+                    return sessionId
+                }
+                else
+                {
+                    return "1"
+                }
+            }
+        }
+        return "0"
+    }
+    override fun logout(sessionId: String) {
+        if (userSessionRepository.findById(sessionId).isEmpty)
+        {
+            throw UserNotFoundException()
+        }
+        userSessionRepository.deleteById(sessionId)
+    }
+    fun getUser(sessionId: String):UserProfile{
+        val optionalUserSession = userSessionRepository.findById(sessionId)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+
+        if (userRepository.findById(userId).isEmpty) {
+            throw UserNotFoundException()
+        }
+
+        val user = userRepository.findById(userId).get()
+        user.password = ""
+
+        return user
+    }
+
+    override fun addFriend(id: String, friendName: String) : Boolean {
+        //True wenn es den freund gibt und er hinzugefügt wurde
+        //False wenn der Freund nicht gefunden wurde
+        return false
+    }
+
+    override fun removeFriend(id: String, friendName: String) :Boolean {
+        //True wenn es den freund gibt und er erfolgreich entfernt wurde
+        //False wenn der Freund nicht gefunden wurde
+        return false
+    }
+
+    override fun getFriends(id: String) : List<UserProfile> {
+        //Hier alle Freunde eines Benutzers ausgeben
+        return userRepository.findAll()
     }
 }

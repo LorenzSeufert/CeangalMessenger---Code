@@ -1,0 +1,29 @@
+body{
+    padding-top: 25px;
+    padding-bottom: 50px;
+    background: #232931;
+    font-family: sans-serif, Arial;
+}
+
+.card{
+    background: #393e46;
+    color: white;
+    border-color: #4ecca3;
+}
+
+.container{
+    padding-top: 30px;
+}
+
+.image-container {
+    position: relative;
+}
+
+.image {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
