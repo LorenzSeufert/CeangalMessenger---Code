@@ -13,6 +13,19 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.disable("x-powered-by");
 
+const apiUrl = "http://localhost:8080/api"
+
+let sessionId = "";
+
+let user = {
+    id: 0,
+    username: "",
+    password: "",
+    email: "",
+    birthdate: "",
+    description: ""
+}
+
 
 app.get("/", function (req,res){
     res.render("loginPage",{
@@ -24,7 +37,7 @@ app.get("/", function (req,res){
 app.post("/login", function (req, res){
     let notEmpty = true;
 
-    if(req.body.username === ""){
+    if(req.body.email === ""){
         res.render("loginPage",{
             error: "info",
             errorMessage: "Missing email!"
@@ -39,14 +52,42 @@ app.post("/login", function (req, res){
         notEmpty = false
     }
     if(notEmpty){
-        let username = req.body.username
-        let pw = hash.createHash('sha256').update(req.body.password).digest('hex')
 
+        let payload = {
+            email: (req.body.email).toString(),
+            password: hash.createHash('sha256').update(req.body.password).digest('hex')
+        }
 
-        console.log(username)
-        console.log(pw)
+        axios.post(apiUrl + "/user/login", payload).then(function (response) {
+            sessionId = response.headers["sessionid"]
+            user = response.data
 
-        res.render("profilePage")
+            res.render("profilePage",{
+                error: "false",
+                errorMessage: "",
+                username: user.username,
+                email: user.email,
+                birthdate: user.birthdate,
+                description: user.description
+            })
+        }).catch(function (error){
+            if (error.response.status === 404){
+                res.render("loginPage",{
+                    error: "error",
+                    errorMessage: "Username not found!"
+                })
+            }else if (error.response.status === 403){
+                res.render("loginPage",{
+                    error: "error",
+                    errorMessage: "Login credentials not matching!"
+                })
+            }else{
+                res.render("loginPage",{
+                    error: "error",
+                    errorMessage: "Something is not working!"
+                })
+            }
+        })
     }
 });
 
