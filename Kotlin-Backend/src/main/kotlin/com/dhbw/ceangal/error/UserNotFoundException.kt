@@ -1,3 +1,3 @@
 package com.dhbw.ceangal.error
 
-class UserNotFoundException : Exception()
+class UserNotFoundException(val error: String = "") : Exception()

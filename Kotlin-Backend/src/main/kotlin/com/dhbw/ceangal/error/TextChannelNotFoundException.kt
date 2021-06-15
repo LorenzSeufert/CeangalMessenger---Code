@@ -1,3 +1,3 @@
 package com.dhbw.ceangal.error
 
-class TextChannelNotFoundException : Exception()
+class TextChannelNotFoundException(val error: String = "") : Exception()

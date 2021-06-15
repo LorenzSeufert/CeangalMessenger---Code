@@ -12,5 +12,6 @@ class Message(
     private var id: Long = 0L,
     var type: MessageType,
     var content: String,
-    var sender: String
+    val senderId: Long,
+    val sender: String
 )

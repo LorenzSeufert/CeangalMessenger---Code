@@ -12,7 +12,7 @@ class TextChannel(
     @ManyToMany
     val users: MutableList<UserProfile> = mutableListOf(),
     //@ElementCollection(targetClass = Message::class, fetch = FetchType.EAGER)
-    @OneToMany(targetEntity = Message::class)
+    @OneToMany(targetEntity = Message::class, fetch = FetchType.EAGER)
     val messages: MutableList<Message> = mutableListOf()
 ) {
 }
