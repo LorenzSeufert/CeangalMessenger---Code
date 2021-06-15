@@ -126,9 +126,26 @@ class UserService:  UserInterface {
             throw UserNotFoundException()
         }
 
-        var user = userRepository.findById(userId).get()
+        val user = userRepository.findById(userId).get()
         user.password = ""
 
         return user
+    }
+
+    override fun addFriend(id: String, friendName: String) : Boolean {
+        //True wenn es den freund gibt und er hinzugefügt wurde
+        //False wenn der Freund nicht gefunden wurde
+        return false
+    }
+
+    override fun removeFriend(id: String, friendName: String) :Boolean {
+        //True wenn es den freund gibt und er erfolgreich entfernt wurde
+        //False wenn der Freund nicht gefunden wurde
+        return false
+    }
+
+    override fun getFriends(id: String) : List<UserProfile> {
+        //Hier alle Freunde eines Benutzers ausgeben
+        return userRepository.findAll()
     }
 }
