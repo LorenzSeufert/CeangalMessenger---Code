@@ -1,6 +1,7 @@
 package com.dhbw.ceangal.usermodel
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -58,17 +59,23 @@ class UserController {
      * @return responseMessage the message and status which is send back as a response
      */
     @PostMapping(value = ["/user/login"])
-    fun login(@RequestBody userProfile:UserProfile): ResponseEntity<String> {
+    fun login(@RequestBody userProfile:UserProfile): ResponseEntity<UserProfile> {
         val sessionId = userService.login(userProfile)
+
+        var header = HttpHeaders()
+        header.add("sessionId",sessionId)
+
+        val user = userService.getUser(sessionId)
+
         if("0".equals(sessionId))
         {
-            return ResponseEntity(sessionId, HttpStatus.NOT_FOUND)
+            return ResponseEntity(user,header, HttpStatus.NOT_FOUND)
         }
         if("1".equals(sessionId))
         {
-            return ResponseEntity(sessionId, HttpStatus.FORBIDDEN)
+            return ResponseEntity(user,header, HttpStatus.FORBIDDEN)
         }
-        return ResponseEntity(sessionId, HttpStatus.OK)
+        return ResponseEntity(user,header, HttpStatus.OK)
     }
 
     /**
