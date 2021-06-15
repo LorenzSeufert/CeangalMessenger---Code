@@ -137,24 +137,27 @@ class UserService:  UserInterface {
         return user
     }
 
-    override fun addFriend(id: Long, friendName: String) : Boolean {
+    override fun addFriend(id: String, friendName: String) : Boolean {
         //True wenn es den freund gibt und er hinzugefügt wurde
         //False wenn der Freund nicht gefunden wurde
-        val optUser = userRepository.findById(id)
-        if (optUser.isEmpty){
-            return false
+        val actUserId: Long = getUserID(id)
+        val userList: List<UserProfile> = userRepository.findAll()
+        for (user in userList){
+            if (user.username == friendName){
+                friendRepository.save(Friend(0, actUserId, user.id, friendName +""))
+                return true
+            }
         }
-        friendRepository.save(Friend(0,id, friendName))
-        return true
-
+        return false
     }
 
     override fun removeFriend(id: String, friendName: String) :Boolean {
         //True wenn es den freund gibt und er erfolgreich entfernt wurde
         //False wenn der Freund nicht gefunden wurde
+        val actUserId: Long = getUserID(id)
         var friends: List<Friend> = friendRepository.findAll()
         for (friend in friends){
-            if(friend.nickname == (friendName)){
+            if(actUserId == friend.rootUserId && friend.nickname == (friendName)){
                 friendRepository.deleteById(friend.id)
                 return true
             }
@@ -165,9 +168,10 @@ class UserService:  UserInterface {
     override fun getFriends(id: String) : List<UserProfile> {
         //Hier alle Freunde eines Benutzers ausgeben
         val friends: List<Friend> = friendRepository.findAll()
+        val actUserId: Long = getUserID(id)
         var friendProfiles: MutableList<UserProfile> = mutableListOf()
         for (friend in friends) {
-            if (friend.userID.equals(id)){
+            if (actUserId == friend.rootUserId){
                 val optUserProfile: Optional<UserProfile> = userRepository.findById(friend.userID)
                 if (optUserProfile.isEmpty){
                     throw UserNotFoundException()
@@ -177,5 +181,19 @@ class UserService:  UserInterface {
             }
         }
         return friendProfiles.toList()
+    }
+
+    private fun getUserID(id: String): Long{
+        val optionalUserSession = userSessionRepository.findById(id)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+
+        if (userRepository.findById(userId).isEmpty) {
+            throw UserNotFoundException()
+        }
+        return userId
     }
 }

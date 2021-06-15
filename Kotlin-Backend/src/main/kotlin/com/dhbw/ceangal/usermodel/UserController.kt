@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
+
 /**
  * This class is controls the user. It contains REST Services for creating, editing and deleting a user.
  */
@@ -101,7 +102,7 @@ class UserController {
      */
     @GetMapping(value = ["/user/addFriend"])
     fun addFriend(@RequestHeader id: String, @RequestHeader friendName: String): ResponseEntity<String> {
-        val found = userService.addFriend(id.toLong(), friendName)
+        val found = userService.addFriend(id, friendName)
 
         if(found)
         {
@@ -142,4 +143,7 @@ class UserController {
 
         return ResponseEntity(jsonString, HttpStatus.OK)
     }
+
+
+
 }
