@@ -6,7 +6,7 @@ interface UserInterface {
     fun deleteUser(id: String)
     fun login(userProfile: UserProfile): String
     fun logout(sessionId: String)
-    fun addFriend(id: String, friendName: String) : Boolean
+    fun addFriend(id: Long, friendName: String) : Boolean
     fun removeFriend(id: String, friendName: String) : Boolean
     fun getFriends(id: String) : List<UserProfile>
 }

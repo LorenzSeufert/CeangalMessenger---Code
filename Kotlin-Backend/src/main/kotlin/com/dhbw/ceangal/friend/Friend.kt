@@ -11,7 +11,6 @@ class Friend (
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     val id: Long = 0L,
-    val friendID: Long,
     val userID: Long,
     var nickname: String
 ) {

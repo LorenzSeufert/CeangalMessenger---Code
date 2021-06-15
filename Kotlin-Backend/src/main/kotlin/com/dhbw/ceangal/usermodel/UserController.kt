@@ -101,7 +101,7 @@ class UserController {
      */
     @GetMapping(value = ["/user/addFriend"])
     fun addFriend(@RequestHeader id: String, @RequestHeader friendName: String): ResponseEntity<String> {
-        val found = userService.addFriend(id, friendName)
+        val found = userService.addFriend(id.toLong(), friendName)
 
         if(found)
         {

@@ -1,8 +1,11 @@
 package com.dhbw.ceangal.usermodel
 
 import com.dhbw.ceangal.error.UserNotFoundException
+import com.dhbw.ceangal.friend.Friend
+import com.dhbw.ceangal.friend.FriendRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 /**
  * This class executes user commands. It functions for creating, editing and deleting a user.
@@ -13,6 +16,8 @@ class UserService:  UserInterface {
     lateinit var userRepository: UserRepository
     @Autowired
     lateinit var userSessionRepository: UserSessionRepository
+    @Autowired
+    lateinit var friendRepository: FriendRepository
 
     /**
      * This function adds the user to the Repository
@@ -132,20 +137,45 @@ class UserService:  UserInterface {
         return user
     }
 
-    override fun addFriend(id: String, friendName: String) : Boolean {
+    override fun addFriend(id: Long, friendName: String) : Boolean {
         //True wenn es den freund gibt und er hinzugefügt wurde
         //False wenn der Freund nicht gefunden wurde
-        return false
+        val optUser = userRepository.findById(id)
+        if (optUser.isEmpty){
+            return false
+        }
+        friendRepository.save(Friend(0,id, friendName))
+        return true
+
     }
 
     override fun removeFriend(id: String, friendName: String) :Boolean {
         //True wenn es den freund gibt und er erfolgreich entfernt wurde
         //False wenn der Freund nicht gefunden wurde
+        var friends: List<Friend> = friendRepository.findAll()
+        for (friend in friends){
+            if(friend.nickname == (friendName)){
+                friendRepository.deleteById(friend.id)
+                return true
+            }
+        }
         return false
     }
 
     override fun getFriends(id: String) : List<UserProfile> {
         //Hier alle Freunde eines Benutzers ausgeben
-        return userRepository.findAll()
+        val friends: List<Friend> = friendRepository.findAll()
+        var friendProfiles: MutableList<UserProfile> = mutableListOf()
+        for (friend in friends) {
+            if (friend.userID.equals(id)){
+                val optUserProfile: Optional<UserProfile> = userRepository.findById(friend.userID)
+                if (optUserProfile.isEmpty){
+                    throw UserNotFoundException()
+                }
+                val userProfile = optUserProfile.get()
+                friendProfiles.add(userProfile)
+            }
+        }
+        return friendProfiles.toList()
     }
 }
