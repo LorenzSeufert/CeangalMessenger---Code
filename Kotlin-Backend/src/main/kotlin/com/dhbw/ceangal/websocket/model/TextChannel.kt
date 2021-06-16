@@ -10,7 +10,7 @@ class TextChannel(
     var name: String,
     @ElementCollection
     val usersName: MutableSet<String> = mutableSetOf(),
-    @OneToMany(targetEntity = Message::class, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Message::class, fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val messages: MutableList<Message> = mutableListOf()
 ) {
 }

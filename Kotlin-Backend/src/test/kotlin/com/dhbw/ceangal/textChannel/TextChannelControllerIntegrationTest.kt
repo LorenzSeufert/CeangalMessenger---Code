@@ -41,21 +41,16 @@ class TextChannelControllerIntegrationTest {
         email = "test@test",
         description = "desc"
     )
-    private val gson = Gson()
-    private var jsonUser = ""
 
     @BeforeEach
     fun clearDatabase() {
         textChannelRepository.deleteAll()
         userRepository.deleteAll()
-        jsonUser = ""
     }
 
     @Test
     fun `creates a text channel and returns it as well as Http status OK`() {
         val user = userRepository.save(user)
-        jsonUser = gson.toJson(user)
-        println(jsonUser)
 
         val result = mvc
             .perform(
@@ -64,7 +59,7 @@ class TextChannelControllerIntegrationTest {
                     .content(
                         """{
                         "name": "testChannel",
-                        "users": [$jsonUser],
+                        "users": [${user.username}],
                         "messages": []
                     }""".trimIndent()
                     )
@@ -76,7 +71,7 @@ class TextChannelControllerIntegrationTest {
         assertEquals(textChannelRepository.count(), 1L)
         val resultString = result.response.contentAsString
         assertThat(resultString, containsString(""""name":"testChannel""""))
-        assertThat(resultString, containsString(""""users":[$jsonUser]"""))
+        assertThat(resultString, containsString(""""users":[${user.username}]"""))
         assertThat(resultString, containsString(""""messages":[]"""))
     }
 
