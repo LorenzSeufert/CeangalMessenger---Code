@@ -26,17 +26,15 @@ class WebSocketChatService {
 
     fun join(textChannelId: Long, message: Message): Message {
         val textChannel = getTextChannel(textChannelId)
-        val user = getUser(message.senderId)
-        textChannel.users.add(user)
-        message.content = "${user.username} joined the channel."
+        textChannel.usersName.add(message.sender)
+        message.content = "${message.sender} joined the channel."
         return message
     }
 
     fun leave(textChannelId: Long, message: Message): Message {
         val textChannel = getTextChannel(textChannelId)
-        val user = getUser(message.senderId)
-        textChannel.users.remove(user)
-        message.content = "${user.username} left the channel."
+        textChannel.usersName.remove(message.sender)
+        message.content = "${message.sender} left the channel."
         return message
     }
 

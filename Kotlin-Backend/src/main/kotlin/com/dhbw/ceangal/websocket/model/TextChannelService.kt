@@ -1,7 +1,10 @@
 package com.dhbw.ceangal.websocket.model
 
 import com.dhbw.ceangal.error.TextChannelNotFoundException
+import com.dhbw.ceangal.error.UserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,6 +14,10 @@ class TextChannelService : TextChannelInterface {
     lateinit var textChannelRepository: TextChannelRepository
 
     override fun createTextChannel(textChannel: TextChannel): TextChannel {
+        if (textChannel.usersName.isEmpty()) {
+            throw UserNotFoundException("No user was passed", BAD_REQUEST)
+        }
+
         return textChannelRepository.save(textChannel)
     }
 
