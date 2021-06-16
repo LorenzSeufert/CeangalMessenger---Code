@@ -57,7 +57,7 @@ class UserService:  UserInterface {
         val optionalUser = userRepository.findById(userId)
 
         if (optionalUser.isEmpty) {
-            throw UserNotFoundException()
+            throw UserNotFoundException("User wasn't found in repo.")
         }
         val user = optionalUser.get()
 
