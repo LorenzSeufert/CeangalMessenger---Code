@@ -50,9 +50,6 @@ class ChatControllerIntegrationTest {
     private val stompClient: WebSocketStompClient = WebSocketStompClient(SockJsClient(createTransportClient()))
     private val channelStompFrameHandler = ChannelStompFrameHandler()
     private val greetingStompFrameHandler = GreetingStompFrameHandler()
-    private val gson = Gson()
-    private val message = Message(123L, MessageType.CHAT, "hello", 123L, "fritz")
-    private val jsonMessage = gson.toJson(message)
     private val handler = WebSocketStompHandler()
 
     @Autowired
@@ -79,16 +76,17 @@ class ChatControllerIntegrationTest {
     @Test
     fun `send message to text channel and get those messages back to the users`() {
         println(channelId)
+
+        val message = Message(123L, MessageType.CHAT, "hello", 123L, "fritz")
+        println(message)
+
         stompClient.messageConverter = MappingJackson2MessageConverter()
-
         val stompSession = stompClient.connect(URL, handler).get(3, SECONDS)
-
         stompSession.subscribe(SUBSCRIBE_TO_TEXT_CHANNEL + channelId, channelStompFrameHandler)
         stompSession.send(SEND_MESSAGE_TO_TEXT_CHANNEL + channelId, message)
         val receivedMessage = messageQueue.poll(3, SECONDS)
-        assertEquals("hello", receivedMessage?.content)
 
-        println(message)
+        assertEquals("hello", receivedMessage?.content)
         assertNotNull(message)
     }
 

@@ -2,7 +2,8 @@ package com.dhbw.ceangal.websocket
 
 import com.dhbw.ceangal.error.TextChannelNotFoundException
 import com.dhbw.ceangal.websocket.model.Message
-import com.dhbw.ceangal.websocket.model.TextChannelRepository
+import com.dhbw.ceangal.websocket.model.MessageType.*
+import com.dhbw.ceangal.websocket.model.WebSocketChatService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Controller
 class WebSocketChatController {
 
     @Autowired
-    lateinit var textChannelRepository: TextChannelRepository
+    lateinit var webSocketChatService: WebSocketChatService
 
     @MessageMapping("/greeting")
     @SendTo("/topic/greeting")
@@ -23,20 +24,15 @@ class WebSocketChatController {
 
     @MessageMapping("/channel/{textChannelId}")
     @SendTo("/topic/channel/{textChannelId}")
-    fun sendMessage(
-        @DestinationVariable textChannelId: Long,
-        message: Message
-    ): Message { //TODO does id convert right?
+    fun sendMessage(@DestinationVariable textChannelId: Long, message: Message): Message {
         if (textChannelId == 0L) {
             throw TextChannelNotFoundException("id is 0")
         }
-        val optionalTextChannel = textChannelRepository.findById(textChannelId)
-        if (optionalTextChannel.isEmpty) {
-            throw TextChannelNotFoundException("channel wasn't found in repository")
-        }
 
-        val textChannel = optionalTextChannel.get()
-        textChannel.messages.add(message)
-        return message
+        return when (message.type) {
+            CHAT -> webSocketChatService.chat(textChannelId, message)
+            JOIN -> webSocketChatService.join(textChannelId, message)
+            LEAVE -> webSocketChatService.leave(textChannelId, message)
+        }
     }
 }
