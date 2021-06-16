@@ -26,6 +26,8 @@ let user = {
     description: ""
 }
 
+let friends = {}
+
 
 app.get("/", function (req,res){
     res.render("loginPage",{
@@ -266,17 +268,94 @@ app.get("/logout", function (req,res){
 });
 
 app.get("/friends", function (req,res){
-    res.render("friendPage")
+
+    axios.get(apiUrl + "/user/getFriends",{
+        headers: {
+            "id": sessionId
+        }
+    }).then(function (response) {
+        friends = response.data
+
+        res.render("friendPage", {
+            error: "false",
+            errorMessage: "false",
+            friends: friends
+        })
+
+    }).catch(function (error){
+        res.render("profilePage",{
+            error: "false",
+            errorMessage: "",
+            username: user.username,
+            email: user.email,
+            birthdate: user.birthdate,
+            description: user.description
+        })
+    })
 });
 
-app.get("/addFriend", function (req,res){
-    console.log("FREUND ADDDDDDEN")
+app.post("/addFriend", function (req,res){
+
+    axios.get(apiUrl + "/user/addFriend",{
+        headers: {
+            "id": sessionId,
+            "friendName": req.body.friendToAdd
+        }
+    }).then(function (response) {
+        updateFriends().then(function (){
+            res.render("friendPage",{
+                error: "success",
+                errorMessage: "Friend successfully added!",
+                friends: friends
+            })
+        })
+    }).catch(function (error){
+        res.render("friendPage",{
+            error: "error",
+            errorMessage: "Username not found. Could not add as friend!",
+            friends: friends
+        })
+    })
 });
 
 app.post("/removeFriend", function (req,res){
-    console.log("FREUND REMOOOOOOOOOOVEN")
-    console.log(req.body.deleteName)
+
+    axios.delete(apiUrl + "/user/removeFriend",{
+        headers: {
+            "id": sessionId,
+            "friendName": req.body.deleteName
+        }
+    }).then(function (response) {
+        updateFriends().then( function () {
+            res.render("friendPage",{
+                error: "success",
+                errorMessage: "Friend successfully removed!",
+                friends: friends
+            })
+        })
+    }).catch(function (error){
+        res.render("friendPage",{
+            error: "error",
+            errorMessage: "Something went wrong! Please try again!",
+            friends: friends
+        })
+    })
 });
+
+function updateFriends(){
+    return new Promise(function (fulfill, reject){
+        axios.get(apiUrl + "/user/getFriends",{
+            headers: {
+                "id": sessionId
+            }
+        }).then(function (response) {
+            friends = response.data
+            fulfill(response.data)
+        }).catch(function (error){
+            reject(error)
+        })
+    });
+}
 
 app.get("/chats", function (req,res){
     res.render("chatPage")
