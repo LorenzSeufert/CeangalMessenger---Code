@@ -45,6 +45,16 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
         return buildResponseEntity(ex.message, BAD_REQUEST)
     }
 
+    @ExceptionHandler(UserAlreadyExistsException::class)
+    fun handleNullPointer(ex: UserAlreadyExistsException): ResponseEntity<Any> {
+        return buildResponseEntity(ex.error, ex.status)
+    }
+
+    @ExceptionHandler(WrongPasswordException::class)
+    fun handleNullPointer(ex: WrongPasswordException): ResponseEntity<Any> {
+        return buildResponseEntity(ex.error, ex.status)
+    }
+
     private fun buildResponseEntity(message: String?, status: HttpStatus): ResponseEntity<Any> {
         return ResponseEntity(message, status)
     }
