@@ -26,6 +26,17 @@ class UserService:  UserInterface {
      * @return the saved UserProfile
      */
     override fun createUser(userProfile: UserProfile): UserProfile {
+        val userList = userRepository.findAll()
+        userList.forEach {
+            if(it.username.equals(userProfile.username))
+            {
+                return UserProfile(0, "wrong", "", "","","" )
+            }
+            if(it.email.equals((userProfile.email)))
+            {
+                return UserProfile(0, "", "", "wrong","","" )
+            }
+        }
         return userRepository.save(userProfile)
     }
 
