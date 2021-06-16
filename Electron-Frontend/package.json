@@ -32,6 +32,13 @@
     },
     "directories": {
       "buildResources": "Electron-Frontend/src"
-    }
+    },
+    "extraFiles": [
+      {
+        "from": "src/img",
+        "to": "src/img",
+        "filter": ["**/*"]
+      }
+    ]
   }
 }

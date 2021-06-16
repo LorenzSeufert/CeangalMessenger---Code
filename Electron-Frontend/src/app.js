@@ -193,38 +193,158 @@ app.post("/signup", function (req,res){
     if(isValid){
         let pw = hash.createHash('sha256').update(req.body.password1).digest('hex')
 
+        let payload = {
+            username: req.body.username,
+            password: pw,
+            email: req.body.email,
+            birthdate: req.body.birthdate,
+            description: req.body.description
+        }
 
-        res.render("loginPage",{
-            error: "false",
-            errorMessage: ""
+        axios.post(apiUrl + "/user/createUser", payload).then(function (response) {
+
+            res.render("loginPage",{
+                error: "success",
+                errorMessage: "User creating was successful!"
+            })
+        }).catch(function (error){
+            res.render("signupPage",{
+                error: "error",
+                errorMessage: "Something went wrong. Please try again!",
+                email: req.body.email,
+                password1: "",
+                password2: "",
+                username: req.body.username,
+                description: req.body.description
+            })
         })
     }
 });
 
 app.get("/editProfile", function (req,res){
-   res.render("editProfilePage")
+   res.render("editProfilePage",{
+       error: "false",
+       errorMessage: "",
+       username: user.username
+   })
 });
 
 app.get("/profile", function (req,res){
-    res.render("profilePage")
+    res.render("profilePage",{
+        error: "false",
+        errorMessage: "",
+        username: user.username,
+        email: user.email,
+        birthdate: user.birthdate,
+        description: user.description
+    })
+});
+
+app.get("/logout", function (req,res){
+
+    axios.delete(apiUrl + "/user/logout",{
+        headers: {
+            "id": sessionId
+        }
+    }).then(function (response) {
+        sessionId = ""
+
+        res.render("loginPage",{
+            error: "success",
+            errorMessage: "Logged out successfully!"
+        })
+    }).catch(function (error){
+        res.render("profilePage",{
+            error: "error",
+            errorMessage: "Something went wrong. Please try again!",
+            username: user.username,
+            email: user.email,
+            birthdate: user.birthdate,
+            description: user.description
+        })
+    })
 });
 
 app.get("/friends", function (req,res){
     res.render("friendPage")
 });
 
+app.get("/addFriend", function (req,res){
+    console.log("FREUND ADDDDDDEN")
+});
+
+app.post("/removeFriend", function (req,res){
+    console.log("FREUND REMOOOOOOOOOOVEN")
+    console.log(req.body.deleteName)
+});
+
 app.get("/chats", function (req,res){
     res.render("chatPage")
 });
 
+app.post("/openChat", function (req,res){
+    console.log(req.body.chatWith)
+});
+
 app.post("/saveData", function (req,res){
-    console.log(req.body.newUsername)
-    console.log(req.body.newEmail)
-    console.log(req.body.newDescription)
+
+    let payload = {
+        username: req.body.newUsername,
+        password: "",
+        email: req.body.newEmail,
+        birthdate: "",
+        description: req.body.newDescription
+    }
+
+    axios.put(apiUrl + "/user/editUser", payload, {
+        headers: {
+            "id": sessionId
+        }
+    }).then(function (response) {
+        user = response.data
+        res.render("editProfilePage",{
+            error: "success",
+            errorMessage: "Profile updated successfully!",
+            username: user.username
+        })
+    }).catch(function (error){
+        res.render("editProfilePage",{
+            error: "error",
+            errorMessage: "Something went wrong. Please try again!",
+            username: user.username
+        })
+    })
 });
 
 app.post("/deleteAccount", function (req,res){
-    console.log("DELETE ACCOUNT")
+
+    axios.delete(apiUrl + "/user/deleteUser",{
+        headers: {
+            "id": sessionId
+        }
+    }).then(function (response) {
+        user = {
+            id: 0,
+            username: "",
+            password: "",
+            email: "",
+            birthdate: "",
+            description: ""
+        }
+
+        sessionId = ""
+
+        res.render("loginPage",{
+            error: "success",
+            errorMessage: "User deleted successfully!"
+        })
+    }).catch(function (error){
+        res.render("editProfilePage",{
+            error: "error",
+            errorMessage: "Something went wrong. Please try again!",
+            username: user.username
+        })
+    })
 });
 
 app.listen(3841, function () {

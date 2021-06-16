@@ -26,7 +26,8 @@
                                 </div>
 
                                 <form class="actionBtn mt-1" action="/addFriend" method="get">
-                                    <div class="addBtn position-sticky" style="margin-left: 350px;">
+                                    <div class="addBtn position-sticky" style="margin-left: 320px;">
+                                        <input type="text" name="friendToAdd" placeholder="Friend to add">
                                         <input type="submit" name="" value="Add Friend">
                                     </div>
                                 </form>
@@ -38,8 +39,14 @@
 
                             <div class="card" id="contentCard">
                                 <div class="card-body">
-                                    <h3 class="card-title text-center">Marianne Musterfrau</h3>
-                                    <p class="card-text text-center">Some example description for a friend card</p>
+                                    <h3 class="card-title d-flex justify-content-between align-items-center">
+                                        Marianne Musterfrau
+                                        <form class="removeBtn" action="/removeFriend" method="post">
+                                            <input type="hidden" name="deleteName" value="Marianne Musterfrau">
+                                            <input type="submit" name="" value="Remove">
+                                        </form>
+                                    </h3>
+                                    <p class="card-text ">Some example description for a friend card</p>
                                 </div>
                             </div>
                         </div>
