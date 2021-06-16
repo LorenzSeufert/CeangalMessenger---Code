@@ -269,6 +269,15 @@ app.get("/friends", function (req,res){
     res.render("friendPage")
 });
 
+app.get("/addFriend", function (req,res){
+    console.log("FREUND ADDDDDDEN")
+});
+
+app.post("/removeFriend", function (req,res){
+    console.log("FREUND REMOOOOOOOOOOVEN")
+    console.log(req.body.deleteName)
+});
+
 app.get("/chats", function (req,res){
     res.render("chatPage")
 });
