@@ -60,7 +60,12 @@ class TextChannelControllerIntegrationTest {
                         "name": "testChannel",
                         "usersName": ["${user.username}"],
                         "messages": [
-                            "type": "JOIN",
+                            {
+                                "type": "JOIN",
+                                "content": "",
+                                "senderId": "${user.id}",
+                                "sender": "${user.username}"
+                            }
                         ]
                     }""".trimIndent()
                     )
@@ -73,7 +78,11 @@ class TextChannelControllerIntegrationTest {
         assertEquals(textChannelRepository.count(), 1L)
         assertThat(resultString, containsString(""""name":"testChannel""""))
         assertThat(resultString, containsString(""""usersName":["${user.username}"]"""))
-        assertThat(resultString, containsString(""""messages":[]"""))
+        assertThat(resultString, containsString(""""messages":[
+            "type": "JOIN",content": "",                         "senderId": ${user.id},
+            "sender": "${user.username}"]
+            """.trimIndent()
+        ))
     }
 
     @Test

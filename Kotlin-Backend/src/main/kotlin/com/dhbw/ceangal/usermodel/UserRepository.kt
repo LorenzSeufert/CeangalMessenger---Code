@@ -6,5 +6,6 @@ import java.util.*
 
 @Repository
 interface UserRepository : JpaRepository<UserProfile, Long> {
+    override fun findById(id: Long): Optional<UserProfile>
     fun findByUsername(userName: String): UserProfile
 }
