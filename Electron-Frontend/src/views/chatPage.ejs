@@ -36,18 +36,23 @@
 
                         <div class="card-content">
 
+                            <% textChannels.slice().forEach(function (channel){%>
+
                             <div class="card" id="contentCard">
                                 <div class="card-body">
                                     <form class="actionBtn" action="/openChat" method="post">
-                                        <h3 class="card-title text-center">Marianne Musterfrau</h3>
+                                        <h3 class="card-title text-center"><%= channel.name%></h3>
                                         <div style="margin-left: 225px;margin-top:15px">
-                                            <input type="hidden" name="chatWith" value="Marianne Musterfrau">
+                                            <input type="hidden" name="chatWith" value="<%= channel.name%>">
                                             <input type="submit" name="" value="Open Channel">
                                         </div>
                                     </form>
 
                                 </div>
                             </div>
+
+                            <% })%>
+
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,5 @@
 package com.dhbw.ceangal.usermodel
 
-import com.dhbw.ceangal.websocket.model.Message
 import com.dhbw.ceangal.websocket.model.TextChannel
 import com.google.gson.annotations.Expose
 import javax.persistence.*
@@ -21,6 +20,7 @@ import javax.persistence.*
 class UserProfile(
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @Expose
     var id: Long = 0L,
     @Expose
     var username: String = "",
