@@ -5,17 +5,17 @@ export const webSocket = {
     connected: false,
     server: "http://127.0.0.1:8082",
 
-    connect: function(friendIds) {
+    connect: function (friendIds) {
         if (this.isConnected()) {
             return;
         }
         this.stompClient = Stomp.client("ws://127.0.0.1:8082/messages");
         this.stompClient.connect(
-            { Authorization: `Bearer ${token}` },
+            {},
             frame => {
                 this.connected = true;
 
-                if(friendIds !== null) {
+                if (friendIds !== null) {
                     friendIds.forEach(id =>
                         this.stompClient.subscribe("/topic/channel/" + id, tick => {
                             console.log(tick);
@@ -33,16 +33,16 @@ export const webSocket = {
         );
     },
 
-    send: function(channelId, payload) {
-        if(!this.isConnected()) {
+    send: function (channelId, payload) {
+        if (!this.isConnected()) {
             this.connect(null)
         }
         console.log(JSON.stringify(payload));
         this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
     },
 
-    joinChannel: function(channelId, payload) {
-        if(!this.isConnected()) {
+    joinChannel: function (channelId, payload) {
+        if (!this.isConnected()) {
             this.connect(null);
         }
         console.log(JSON.stringify(payload));
@@ -52,13 +52,16 @@ export const webSocket = {
         })
     },
 
-    leaveChannel: function(channelId, payload) {
-        if(!this.isConnected()) {
+    leaveChannel: function (channelId, payload) {
+        if (!this.isConnected()) {
             this.connect(null);
         }
         console.log(JSON.stringify(payload));
         this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-        this.stompClient.unsubscribe("/topic/channel/" + channelId)
+        this.stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
+            console.log(tick);
+            this.received_messages.push(JSON.parse(tick.body).content);
+        })
     },
 
     isConnected() {

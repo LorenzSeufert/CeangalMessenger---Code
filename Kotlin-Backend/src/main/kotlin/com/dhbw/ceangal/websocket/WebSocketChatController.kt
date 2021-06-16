@@ -3,7 +3,6 @@ package com.dhbw.ceangal.websocket
 import com.dhbw.ceangal.error.TextChannelNotFoundException
 import com.dhbw.ceangal.websocket.model.Message
 import com.dhbw.ceangal.websocket.model.MessageType.*
-import com.dhbw.ceangal.websocket.model.WebSocketChatService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping

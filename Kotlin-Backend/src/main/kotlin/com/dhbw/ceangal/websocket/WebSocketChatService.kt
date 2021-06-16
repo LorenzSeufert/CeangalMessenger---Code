@@ -1,9 +1,12 @@
-package com.dhbw.ceangal.websocket.model
+package com.dhbw.ceangal.websocket
 
 import com.dhbw.ceangal.error.TextChannelNotFoundException
 import com.dhbw.ceangal.error.UserNotFoundException
 import com.dhbw.ceangal.usermodel.UserProfile
 import com.dhbw.ceangal.usermodel.UserRepository
+import com.dhbw.ceangal.websocket.model.Message
+import com.dhbw.ceangal.websocket.model.TextChannel
+import com.dhbw.ceangal.websocket.model.TextChannelRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
