@@ -282,6 +282,10 @@ app.get("/chats", function (req,res){
     res.render("chatPage")
 });
 
+app.post("/openChat", function (req,res){
+    console.log(req.body.chatWith)
+});
+
 app.post("/saveData", function (req,res){
 
     let payload = {
