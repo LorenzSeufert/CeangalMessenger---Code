@@ -137,9 +137,14 @@ class UserService:  UserInterface {
         return user
     }
 
+    /**
+     * This Function adds the user profile with the given Name as a friend to
+     * the logged in user
+     * @param id the SessionId of the logged in user
+     * @param friendName The userName of the profile that shall be added
+     * @return true if adding a friend was successful, false if not
+     */
     override fun addFriend(id: String, friendName: String) : Boolean {
-        //True wenn es den freund gibt und er hinzugefügt wurde
-        //False wenn der Freund nicht gefunden wurde
         val actUserId: Long = getUserID(id)
         val userList: List<UserProfile> = userRepository.findAll()
         for (user in userList){
@@ -151,9 +156,14 @@ class UserService:  UserInterface {
         return false
     }
 
+    /**
+     * This function removes the friend with the given username from the friendlist
+     * of the logged in user.
+     * @param id The SessionId of the logged in user
+     * @param friendName the UserName of the friend that shall be removed
+     * @return True if removing was successful, false if not
+     */
     override fun removeFriend(id: String, friendName: String) :Boolean {
-        //True wenn es den freund gibt und er erfolgreich entfernt wurde
-        //False wenn der Freund nicht gefunden wurde
         val actUserId: Long = getUserID(id)
         var friends: List<Friend> = friendRepository.findAll()
         for (friend in friends){
@@ -165,6 +175,11 @@ class UserService:  UserInterface {
         return false
     }
 
+    /**
+     * Returns all friends, associated with the logged in user profile as a User Profile list
+     * @param id the SessionId of the logged in User
+     * @return a List that contains all User Profiles that are associated with the logged in user
+     */
     override fun getFriends(id: String) : List<UserProfile> {
         //Hier alle Freunde eines Benutzers ausgeben
         val friends: List<Friend> = friendRepository.findAll()
@@ -183,6 +198,11 @@ class UserService:  UserInterface {
         return friendProfiles.toList()
     }
 
+    /**
+     * Selects the UserId based on the SessionID
+     * @param id the SessionId of the logged in user
+     * @return the UserId to which the SessionId is associated
+     */
     private fun getUserID(id: String): Long{
         val optionalUserSession = userSessionRepository.findById(id)
         if (optionalUserSession.isEmpty) {
