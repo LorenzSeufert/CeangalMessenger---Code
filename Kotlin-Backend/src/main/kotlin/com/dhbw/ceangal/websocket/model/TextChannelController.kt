@@ -24,8 +24,8 @@ class TextChannelController {
         textChannelService.getTextChannel(id)
     }
 
-    @GetMapping(path = ["/getAll/{id}"])
-    fun getAllTextChannelsFromUser(@PathVariable id: Long) {
+    @GetMapping(path = ["/getAll"])
+    fun getAllTextChannelsFromUser(@RequestHeader id: Long) {
         textChannelService.getAllTextChannelsFromUser(id)
     }
 
