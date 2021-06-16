@@ -1,8 +1,11 @@
 package com.dhbw.ceangal.usermodel
 
 import com.dhbw.ceangal.error.UserNotFoundException
+import com.dhbw.ceangal.friend.Friend
+import com.dhbw.ceangal.friend.FriendRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 /**
  * This class executes user commands. It functions for creating, editing and deleting a user.
@@ -13,6 +16,8 @@ class UserService:  UserInterface {
     lateinit var userRepository: UserRepository
     @Autowired
     lateinit var userSessionRepository: UserSessionRepository
+    @Autowired
+    lateinit var friendRepository: FriendRepository
 
     /**
      * This function adds the user to the Repository
@@ -132,20 +137,83 @@ class UserService:  UserInterface {
         return user
     }
 
+    /**
+     * This Function adds the user profile with the given Name as a friend to
+     * the logged in user
+     * @param id the SessionId of the logged in user
+     * @param friendName The userName of the profile that shall be added
+     * @return true if adding a friend was successful, false if not
+     */
     override fun addFriend(id: String, friendName: String) : Boolean {
-        //True wenn es den freund gibt und er hinzugefügt wurde
-        //False wenn der Freund nicht gefunden wurde
+        val actUserId: Long = getUserID(id)
+        val userList: List<UserProfile> = userRepository.findAll()
+        for (user in userList){
+            if (user.username == friendName){
+                friendRepository.save(Friend(0, actUserId, user.id, friendName +""))
+                return true
+            }
+        }
         return false
     }
 
+    /**
+     * This function removes the friend with the given username from the friendlist
+     * of the logged in user.
+     * @param id The SessionId of the logged in user
+     * @param friendName the UserName of the friend that shall be removed
+     * @return True if removing was successful, false if not
+     */
     override fun removeFriend(id: String, friendName: String) :Boolean {
-        //True wenn es den freund gibt und er erfolgreich entfernt wurde
-        //False wenn der Freund nicht gefunden wurde
+        val actUserId: Long = getUserID(id)
+        var friends: List<Friend> = friendRepository.findAll()
+        for (friend in friends){
+            if(actUserId == friend.rootUserId && friend.nickname == (friendName)){
+                friendRepository.deleteById(friend.id)
+                return true
+            }
+        }
         return false
     }
 
+    /**
+     * Returns all friends, associated with the logged in user profile as a User Profile list
+     * @param id the SessionId of the logged in User
+     * @return a List that contains all User Profiles that are associated with the logged in user
+     */
     override fun getFriends(id: String) : List<UserProfile> {
         //Hier alle Freunde eines Benutzers ausgeben
-        return userRepository.findAll()
+        val friends: List<Friend> = friendRepository.findAll()
+        val actUserId: Long = getUserID(id)
+        var friendProfiles: MutableList<UserProfile> = mutableListOf()
+        for (friend in friends) {
+            if (actUserId == friend.rootUserId){
+                val optUserProfile: Optional<UserProfile> = userRepository.findById(friend.userID)
+                if (optUserProfile.isEmpty){
+                    throw UserNotFoundException()
+                }
+                val userProfile = optUserProfile.get()
+                friendProfiles.add(userProfile)
+            }
+        }
+        return friendProfiles.toList()
+    }
+
+    /**
+     * Selects the UserId based on the SessionID
+     * @param id the SessionId of the logged in user
+     * @return the UserId to which the SessionId is associated
+     */
+    private fun getUserID(id: String): Long{
+        val optionalUserSession = userSessionRepository.findById(id)
+        if (optionalUserSession.isEmpty) {
+            throw UserNotFoundException()
+        }
+        val userSession = optionalUserSession.get()
+        val userId = userSession.userId
+
+        if (userRepository.findById(userId).isEmpty) {
+            throw UserNotFoundException()
+        }
+        return userId
     }
 }

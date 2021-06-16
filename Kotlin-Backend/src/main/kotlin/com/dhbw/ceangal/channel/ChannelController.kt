@@ -19,7 +19,7 @@ class ChannelController
     @PostMapping(path = ["/createChannel"])
     fun createChannel(@RequestBody channel: Channel): ResponseEntity<String> {
         channelService.createChannel(channel)
-        return ResponseEntity("Channel was created succesfully.", HttpStatus.OK)
+        return ResponseEntity("Channel was created successfully.", HttpStatus.OK)
     }
 }
 
