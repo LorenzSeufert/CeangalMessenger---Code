@@ -20,13 +20,13 @@ class TextChannelController {
     }
 
     @GetMapping(path = ["/get/{id}"])
-    fun getTextChannel(@PathVariable id: Long) {
-        textChannelService.getTextChannel(id)
+    fun getTextChannel(@PathVariable id: Long) : ResponseEntity<TextChannel> {
+        return ResponseEntity(textChannelService.getTextChannel(id), OK)
     }
 
     @GetMapping(path = ["/getAll/{id}"])
-    fun getAllTextChannelsFromUser(@PathVariable id: Long) {
-        textChannelService.getAllTextChannelsFromUser(id)
+    fun getAllTextChannelsFromUser(@PathVariable id: Long) : ResponseEntity<MutableList<TextChannel>> {
+        return ResponseEntity(textChannelService.getAllTextChannelsFromUser(id), OK)
     }
 
     @PutMapping(path = ["/edit"])
