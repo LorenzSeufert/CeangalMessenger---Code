@@ -75,11 +75,7 @@ class ChatControllerIntegrationTest {
 
     @Test
     fun `send message to text channel and get those messages back to the users`() {
-        println(channelId)
-
         val message = Message(123L, MessageType.CHAT, "hello", 123L, "fritz")
-        println(message)
-
         stompClient.messageConverter = MappingJackson2MessageConverter()
         val stompSession = stompClient.connect(URL, handler).get(3, SECONDS)
         stompSession.subscribe(SUBSCRIBE_TO_TEXT_CHANNEL + channelId, channelStompFrameHandler)
@@ -90,6 +86,18 @@ class ChatControllerIntegrationTest {
         assertNotNull(message)
     }
 
+    @Test
+    fun `join a text channel and get user joined back`() {
+        val message = Message(12L, MessageType.JOIN, "hello", 123L, "fritz")
+        stompClient.messageConverter = MappingJackson2MessageConverter()
+        val stompSession = stompClient.connect(URL, handler).get(3, SECONDS)
+        stompSession.subscribe(SUBSCRIBE_TO_TEXT_CHANNEL + channelId, channelStompFrameHandler)
+        stompSession.send(SEND_MESSAGE_TO_TEXT_CHANNEL + channelId, message)
+        val receivedMessage = messageQueue.poll(3, SECONDS)
+
+        assertEquals("fritz joined the channel", receivedMessage?.content)
+        assertNotNull(message)
+    }
 
     private fun createTransportClient(): List<Transport> {
         val transports = mutableListOf<Transport>()
