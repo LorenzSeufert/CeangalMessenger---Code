@@ -24,6 +24,11 @@ class TextChannelController {
         textChannelService.getTextChannel(id)
     }
 
+    @GetMapping(path = ["/getAll"])
+    fun getAllTextChannels() {
+        textChannelService.getAllTextChannels()
+    }
+
     @PutMapping(path = ["/edit"])
     fun editChannel(@RequestBody textChannel: TextChannel) {
         textChannelService.editTextChannel(textChannel)

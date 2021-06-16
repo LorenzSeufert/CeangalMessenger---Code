@@ -31,6 +31,10 @@ class TextChannelService : TextChannelInterface {
         return optionalTextChannel.get()
     }
 
+    override fun getAllTextChannels(): MutableList<TextChannel> {
+        return textChannelRepository.findAll()
+    }
+
     override fun editTextChannel(textChannel: TextChannel): TextChannel {
         val channel = getTextChannel(textChannel.id)
         channel.name = textChannel.name
