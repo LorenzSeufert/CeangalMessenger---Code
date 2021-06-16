@@ -67,16 +67,6 @@ class UserController {
         var header = HttpHeaders()
         header.add("sessionId",sessionId)
 
-
-
-        if("0".equals(sessionId))
-        {
-            return ResponseEntity(null, header, HttpStatus.NOT_FOUND)
-        }
-        if("1".equals(sessionId))
-        {
-            return ResponseEntity(null, header, HttpStatus.FORBIDDEN)
-        }
         val user = userService.getUser(sessionId)
         return ResponseEntity(user,header, HttpStatus.OK)
     }
@@ -102,13 +92,8 @@ class UserController {
      */
     @GetMapping(value = ["/user/addFriend"])
     fun addFriend(@RequestHeader id: String, @RequestHeader friendName: String): ResponseEntity<String> {
-        val found = userService.addFriend(id, friendName)
-
-        if(found)
-        {
-            return ResponseEntity("Friend has been added successfully.", HttpStatus.OK)
-        }
-        return ResponseEntity("User could not be found.", HttpStatus.NOT_FOUND)
+        userService.addFriend(id, friendName)
+        return ResponseEntity("Friend has been added successfully.", HttpStatus.OK)
     }
 
     /**
@@ -120,13 +105,8 @@ class UserController {
      */
     @DeleteMapping(value = ["/user/removeFriend"])
     fun removeFriend(@RequestHeader id: String, @RequestHeader friendName: String): ResponseEntity<String> {
-        val found = userService.removeFriend(id, friendName)
-
-        if(found)
-        {
-            return ResponseEntity("Friend was successful removed", HttpStatus.OK)
-        }
-        return ResponseEntity("Friend could not found", HttpStatus.NOT_FOUND)
+        userService.removeFriend(id, friendName)
+        return ResponseEntity("Friend was successful removed", HttpStatus.OK)
     }
 
     /**

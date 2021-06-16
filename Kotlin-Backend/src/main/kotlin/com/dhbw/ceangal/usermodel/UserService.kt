@@ -2,6 +2,7 @@ package com.dhbw.ceangal.usermodel
 
 import com.dhbw.ceangal.error.UserAlreadyExistsException
 import com.dhbw.ceangal.error.UserNotFoundException
+import com.dhbw.ceangal.error.WrongPasswordException
 import com.dhbw.ceangal.friend.Friend
 import com.dhbw.ceangal.friend.FriendRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -136,11 +137,11 @@ class UserService:  UserInterface {
                 }
                 else
                 {
-                    return "1"
+                    throw WrongPasswordException("Wrong Password")
                 }
             }
         }
-        return "0"
+        throw UserNotFoundException("Email doesn't exist")
     }
     override fun logout(sessionId: String) {
         if (userSessionRepository.findById(sessionId).isEmpty)
@@ -174,16 +175,16 @@ class UserService:  UserInterface {
      * @param friendName The userName of the profile that shall be added
      * @return true if adding a friend was successful, false if not
      */
-    override fun addFriend(id: String, friendName: String) : Boolean {
+    override fun addFriend(id: String, friendName: String){
         val actUserId: Long = getUserID(id)
         val userList: List<UserProfile> = userRepository.findAll()
         for (user in userList){
             if (user.username == friendName){
                 friendRepository.save(Friend(0, actUserId, user.id, friendName +""))
-                return true
+                return
             }
         }
-        return false
+        throw UserNotFoundException("User not found")
     }
 
     /**
@@ -193,16 +194,16 @@ class UserService:  UserInterface {
      * @param friendName the UserName of the friend that shall be removed
      * @return True if removing was successful, false if not
      */
-    override fun removeFriend(id: String, friendName: String) :Boolean {
+    override fun removeFriend(id: String, friendName: String){
         val actUserId: Long = getUserID(id)
         var friends: List<Friend> = friendRepository.findAll()
         for (friend in friends){
             if(actUserId == friend.rootUserId && friend.nickname == (friendName)){
                 friendRepository.deleteById(friend.id)
-                return true
+                return
             }
         }
-        return false
+        throw UserNotFoundException("Friend doesn't exist")
     }
 
     /**
