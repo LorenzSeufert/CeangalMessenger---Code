@@ -24,7 +24,7 @@ class TextChannelController {
         return ResponseEntity(textChannelService.getTextChannel(id), OK)
     }
 
-    @GetMapping(path = ["/getAll/{id}"])
+    @GetMapping(path = ["/getAll"])
     fun getAllTextChannelsFromUser(@RequestHeader id: Long) : ResponseEntity<MutableList<TextChannel>> {
         return ResponseEntity(textChannelService.getAllTextChannelsFromUser(id), OK)
     }
