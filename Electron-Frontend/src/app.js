@@ -213,15 +213,47 @@ app.post("/signup", function (req,res){
                 errorMessage: "User creating was successful!"
             })
         }).catch(function (error){
-            res.render("signupPage",{
-                error: "error",
-                errorMessage: "Something went wrong. Please try again!",
-                email: req.body.email,
-                password1: "",
-                password2: "",
-                username: req.body.username,
-                description: req.body.description
-            })
+            if (error.response.data === "Email and Username already exists"){
+                res.render("signupPage",{
+                    error: "error",
+                    errorMessage: "Username and Email already exist! Please use something else!",
+                    email: "",
+                    password1: "",
+                    password2: "",
+                    username: "",
+                    description: req.body.description
+                })
+            }else if (error.response.data === "Username already exists"){
+                res.render("signupPage",{
+                    error: "error",
+                    errorMessage: "Username already exist! Please use something else!",
+                    email: req.body.email,
+                    password1: "",
+                    password2: "",
+                    username: "",
+                    description: req.body.description
+                })
+            }else if (error.response.data === "Email already exists"){
+                res.render("signupPage",{
+                    error: "error",
+                    errorMessage: "Email already exist! Please use something else!",
+                    email: "",
+                    password1: "",
+                    password2: "",
+                    username: req.body.username,
+                    description: req.body.description
+                })
+            }else{
+                res.render("signupPage",{
+                    error: "error",
+                    errorMessage: "Something is not working! Please try again",
+                    email: req.body.email,
+                    password1: "",
+                    password2: "",
+                    username: req.body.username,
+                    description: req.body.description
+                })
+            }
         })
     }
 });
@@ -394,11 +426,32 @@ app.post("/saveData", function (req,res){
             username: user.username
         })
     }).catch(function (error){
-        res.render("editProfilePage",{
-            error: "error",
-            errorMessage: "Something went wrong. Please try again!",
-            username: user.username
-        })
+
+        if (error.response.data === "Email and Username already exists"){
+            res.render("editProfilePage",{
+                error: "error",
+                errorMessage: "Username and Email already exist! Please use something else!",
+                username: user.username
+            })
+        }else if (error.response.data === "Username already exists"){
+            res.render("editProfilePage",{
+                error: "error",
+                errorMessage: "Username already exist! Please use something else!",
+                username: user.username
+            })
+        }else if (error.response.data === "Email already exists"){
+            res.render("editProfilePage",{
+                error: "error",
+                errorMessage: "Email already exist! Please use something else!",
+                username: user.username
+            })
+        }else{
+            res.render("editProfilePage",{
+                error: "error",
+                errorMessage: "Something went wrong. Please try again!",
+                username: user.username
+            })
+        }
     })
 });
 
