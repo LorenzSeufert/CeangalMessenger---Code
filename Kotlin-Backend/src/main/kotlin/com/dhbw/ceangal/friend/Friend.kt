@@ -1,6 +1,5 @@
 package com.dhbw.ceangal.friend
 
-import java.util.*
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -11,9 +10,9 @@ class Friend (
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     val id: Long = 0L,
-    val rootUserId: Long,
-    val userID: Long,
-    var nickname: String
+    val rootUserId: Long = 0L,
+    val userID: Long = 0L,
+    var nickname: String = ""
     ) {
 
 
