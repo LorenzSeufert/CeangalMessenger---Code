@@ -64,6 +64,9 @@ app.post("/login", function (req, res){
             sessionId = response.headers["sessionid"]
             user = response.data
 
+            sessionStorage.setItem("userId", user.id)
+            sessionStorage.setItem("username", user.username)
+
             res.render("profilePage",{
                 error: "false",
                 errorMessage: "",
@@ -381,6 +384,10 @@ app.post("/saveData", function (req,res){
         }
     }).then(function (response) {
         user = response.data
+
+        sessionStorage.setItem("userId", user.id)
+        sessionStorage.setItem("username", user.username)
+
         res.render("editProfilePage",{
             error: "success",
             errorMessage: "Profile updated successfully!",
