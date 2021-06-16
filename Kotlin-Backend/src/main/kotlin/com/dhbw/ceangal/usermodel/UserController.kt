@@ -39,14 +39,6 @@ class UserController {
     @PutMapping(value = ["/user/editUser"])
     fun editUser(@RequestBody userProfile:UserProfile, @RequestHeader id: String): ResponseEntity<UserProfile> {
         val user = userService.editUser(userProfile, id)
-        if(user.email.equals("wrong") )
-        {
-            return ResponseEntity(null, HttpStatus.FORBIDDEN)
-        }
-        if(user.username.equals("wrong"))
-        {
-            return ResponseEntity(null, HttpStatus.NOT_ACCEPTABLE)
-        }
         return ResponseEntity(user, HttpStatus.OK)
     }
 

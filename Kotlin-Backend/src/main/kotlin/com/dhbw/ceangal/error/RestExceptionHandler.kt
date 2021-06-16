@@ -27,12 +27,12 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(TextChannelNotFoundException::class)
     fun handleEntityNotFound(ex: TextChannelNotFoundException): ResponseEntity<Any> {
-        return buildResponseEntity(ex.message, ex.status)
+        return buildResponseEntity(ex.error, ex.status)
     }
 
     @ExceptionHandler(UserNotFoundException::class)
     fun handleEntityNotFound(ex: UserNotFoundException): ResponseEntity<Any> {
-        return buildResponseEntity(ex.message, ex.status)
+        return buildResponseEntity(ex.error, ex.status)
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
@@ -43,6 +43,11 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(NullPointerException::class)
     fun handleNullPointer(ex: NullPointerException): ResponseEntity<Any> {
         return buildResponseEntity(ex.message, BAD_REQUEST)
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException::class)
+    fun handleNullPointer(ex: UserAlreadyExistsException): ResponseEntity<Any> {
+        return buildResponseEntity(ex.error, ex.status)
     }
 
     private fun buildResponseEntity(message: String?, status: HttpStatus): ResponseEntity<Any> {
