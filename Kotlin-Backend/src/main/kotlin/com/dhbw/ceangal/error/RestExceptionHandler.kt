@@ -27,12 +27,12 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(TextChannelNotFoundException::class)
     fun handleEntityNotFound(ex: TextChannelNotFoundException): ResponseEntity<Any> {
-        return buildResponseEntity(ex.message, ex.status)
+        return buildResponseEntity(ex.error, ex.status)
     }
 
     @ExceptionHandler(UserNotFoundException::class)
     fun handleEntityNotFound(ex: UserNotFoundException): ResponseEntity<Any> {
-        return buildResponseEntity(ex.message, ex.status)
+        return buildResponseEntity(ex.error, ex.status)
     }
 
     @ExceptionHandler(IllegalArgumentException::class)

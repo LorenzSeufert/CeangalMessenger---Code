@@ -14,14 +14,18 @@ class TextChannelService : TextChannelInterface {
         return textChannelRepository.save(textChannel)
     }
 
-    override fun editTextChannel(textChannel: TextChannel, id: Long): TextChannel {
+    override fun getTextChannel(id: Long): TextChannel {
         val optionalTextChannel = textChannelRepository.findById(id)
 
         if (optionalTextChannel.isEmpty) {
             throw TextChannelNotFoundException()
         }
 
-        val channel = optionalTextChannel.get()
+        return optionalTextChannel.get()
+    }
+
+    override fun editTextChannel(textChannel: TextChannel): TextChannel {
+        val channel = getTextChannel(textChannel.id)
         channel.name = textChannel.name
 
         return textChannelRepository.save(channel)
