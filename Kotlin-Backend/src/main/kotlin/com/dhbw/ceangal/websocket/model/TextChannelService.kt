@@ -2,6 +2,8 @@ package com.dhbw.ceangal.websocket.model
 
 import com.dhbw.ceangal.error.TextChannelNotFoundException
 import com.dhbw.ceangal.error.UserNotFoundException
+import com.dhbw.ceangal.usermodel.UserProfile
+import com.dhbw.ceangal.usermodel.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
@@ -13,12 +15,21 @@ class TextChannelService : TextChannelInterface {
     @Autowired
     lateinit var textChannelRepository: TextChannelRepository
 
+    @Autowired
+    lateinit var userRepository: UserRepository
+
     override fun createTextChannel(textChannel: TextChannel): TextChannel {
         if (textChannel.usersName.isEmpty()) {
             throw UserNotFoundException("No user was passed", BAD_REQUEST)
         }
 
-        return textChannelRepository.save(textChannel)
+        val channel = textChannelRepository.save(textChannel)
+        textChannel.usersName.forEach { userName ->
+            val user = userRepository.findByUsername(userName)
+            user.textChannels.add(channel)
+        }
+
+        return channel
     }
 
     override fun getTextChannel(id: Long): TextChannel {
@@ -31,8 +42,9 @@ class TextChannelService : TextChannelInterface {
         return optionalTextChannel.get()
     }
 
-    override fun getAllTextChannels(): MutableList<TextChannel> {
-        return textChannelRepository.findAll()
+    override fun getAllTextChannelsFromUser(id: Long): MutableList<TextChannel> {
+        val user = getUser(id)
+        return user.textChannels
     }
 
     override fun editTextChannel(textChannel: TextChannel): TextChannel {
@@ -48,5 +60,15 @@ class TextChannelService : TextChannelInterface {
         }
 
         textChannelRepository.deleteById(id)
+    }
+
+    private fun getUser(id: Long): UserProfile {
+        val optionalUser = userRepository.findById(id)
+
+        if (optionalUser.isEmpty) {
+            throw UserNotFoundException()
+        }
+
+        return optionalUser.get()
     }
 }

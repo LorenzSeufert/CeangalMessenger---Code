@@ -24,9 +24,9 @@ class TextChannelController {
         textChannelService.getTextChannel(id)
     }
 
-    @GetMapping(path = ["/getAll"])
-    fun getAllTextChannels() {
-        textChannelService.getAllTextChannels()
+    @GetMapping(path = ["/getAll/{id}"])
+    fun getAllTextChannelsFromUser(@PathVariable id: Long) {
+        textChannelService.getAllTextChannelsFromUser(id)
     }
 
     @PutMapping(path = ["/edit"])

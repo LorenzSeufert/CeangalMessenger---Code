@@ -51,7 +51,6 @@ class TextChannelControllerIntegrationTest {
     @Test
     fun `creates a text channel and returns it as well as Http status OK`() {
         val user = userRepository.save(user)
-
         val result = mvc
             .perform(
                 post("/api/textChannel/create")
@@ -59,8 +58,10 @@ class TextChannelControllerIntegrationTest {
                     .content(
                         """{
                         "name": "testChannel",
-                        "users": [${user.username}],
-                        "messages": []
+                        "usersName": ["${user.username}"],
+                        "messages": [
+                            "type": "JOIN",
+                        ]
                     }""".trimIndent()
                     )
                     .accept(MediaType.APPLICATION_JSON)
@@ -68,10 +69,10 @@ class TextChannelControllerIntegrationTest {
             .andExpect(status().isOk)
             .andReturn()
 
-        assertEquals(textChannelRepository.count(), 1L)
         val resultString = result.response.contentAsString
+        assertEquals(textChannelRepository.count(), 1L)
         assertThat(resultString, containsString(""""name":"testChannel""""))
-        assertThat(resultString, containsString(""""users":[${user.username}]"""))
+        assertThat(resultString, containsString(""""usersName":["${user.username}"]"""))
         assertThat(resultString, containsString(""""messages":[]"""))
     }
 
