@@ -5,14 +5,13 @@ const path = require("path");
 const hash = require("crypto");
 const axios = require("axios");
 const SockJs = require('sockjs-client');
-const Stomp = require('@stomp/stompjs')
 
 const app = express();
 
-let socket = new SockJs("http://localhost:8080/messages/");
-let stompClient = Stomp.over(function(){
-    return new WebSocket('ws://localhost:8080/messages/')
-});
+// let socket = new SockJs("http://localhost:8080/messages/");
+// let stompClient = Stomp.over(function(){
+//     return new WebSocket('ws://localhost:8080/messages/')
+// });
 
 app.use(express.static(__dirname + "/public"));
 app.set("views", path.join(__dirname, "../src/views"));
@@ -605,7 +604,7 @@ app.post("/openChat", function (req, res) {
     }
     console.log(channelId)
 
-    webSocket.connect(channelId);
+    // webSocket.connect(channelId);
 
     /*stompClient.connect({}, () => {
         stompClient.subscribe('/topic/channel/' + channelId, (data) => {
@@ -617,7 +616,7 @@ app.post("/openChat", function (req, res) {
     });*/
 
 
-    console.log(webSocket.received_messages)
+    // console.log(webSocket.received_messages)
 
     res.render("chat", {
         chatName: req.body.chatWith
@@ -625,7 +624,7 @@ app.post("/openChat", function (req, res) {
 });
 
 app.get("/closeChat", function (req,res){
-    webSocket.disconnect()
+    // webSocket.disconnect()
 
     axios.get(apiUrl + "/textChannel/getAllFromUser", {
         headers: {
