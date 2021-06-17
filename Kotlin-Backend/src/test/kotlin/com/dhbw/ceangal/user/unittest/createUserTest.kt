@@ -1,4 +1,4 @@
-package com.dhbw.ceangal.user
+package com.dhbw.ceangal.user.unittest
 
 import com.dhbw.ceangal.usermodel.UserProfile
 import com.dhbw.ceangal.usermodel.UserService

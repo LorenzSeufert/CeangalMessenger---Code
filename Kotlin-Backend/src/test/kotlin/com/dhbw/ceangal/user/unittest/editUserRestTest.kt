@@ -1,7 +1,8 @@
-package com.dhbw.ceangal.user
+package com.dhbw.ceangal.user.unittest
 
 import com.dhbw.ceangal.usermodel.UserController
 import com.dhbw.ceangal.usermodel.UserProfile
+import com.dhbw.ceangal.usermodel.UserService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,14 +13,17 @@ import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
-class createUserRestTest {
+class editUserRestTest {
     @Autowired
     lateinit var userController: UserController
-
+    @Autowired
+    lateinit var userService: UserService
     @Test
-    fun createUserTest() {
+    fun editUserTest() {
         var userProfile = UserProfile(1, "User1", "password", "abc@gmx.de", "01.01.2000", "description")
-
-        assertEquals(HttpStatus.OK, userController.createUser(userProfile).statusCode)
+        userController.createUser(userProfile)
+        val sessionId = userService.login(userProfile)
+        val userProfileChange = UserProfile(0, "NewName", "", "", "", "")
+        assertEquals(HttpStatus.OK, userController.editUser(userProfileChange, sessionId).statusCode)
     }
 }

@@ -5,12 +5,14 @@ const path = require("path");
 const hash = require("crypto");
 const axios = require("axios");
 const SockJs = require('sockjs-client');
-const Stomp = require('stompjs')
+const Stomp = require('@stomp/stompjs')
 
 const app = express();
 
-let socket = new SockJs(`https://localhost:8080/messages`);
-let stompClient = Stomp.over(socket);
+let socket = new SockJs("http://localhost:8080/messages/");
+let stompClient = Stomp.over(function(){
+    return new WebSocket('ws://localhost:8080/messages/')
+});
 
 app.use(express.static(__dirname + "/public"));
 app.set("views", path.join(__dirname, "../src/views"));
@@ -53,13 +55,13 @@ const webSocket = {
         if (this.isConnected()) {
             return;
         }
+        console.log("trying to connect.")
         stompClient.connect(
             {},
             frame => {
                 this.connected = true;
-
                 if (channelId !== null) {
-                    stompClient.subscribe("/topic/channel/" + id, tick => {
+                    stompClient.subscribe("/topic/channel/" + channelId, tick => {
                         console.log(tick);
                         this.received_messages.push(JSON.parse(tick.body).content);
                     })
@@ -68,7 +70,7 @@ const webSocket = {
                 console.log("Connected" + frame);
             },
             error => {
-                console.log(error);
+                console.log("Error" + error);
                 this.connected = false;
             }
         );

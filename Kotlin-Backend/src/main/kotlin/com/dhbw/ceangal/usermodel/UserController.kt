@@ -123,7 +123,4 @@ class UserController {
 
         return ResponseEntity(jsonString, HttpStatus.OK)
     }
-
-
-
 }
