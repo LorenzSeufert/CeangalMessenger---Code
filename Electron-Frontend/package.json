@@ -24,7 +24,8 @@
     "express": "^4.17.1",
     "express-ws": "^5.0.2",
     "stompjs": "^2.3.3",
-    "sweetalert2": "^11.0.17"
+    "sweetalert2": "^11.0.17",
+    "webstomp-client": "^1.2.6"
   },
   "build": {
     "appId": "de.dhbw.ceangalmessenger",
