@@ -9,9 +9,9 @@
 </head>
 <body>
 
-    <form class="actionBtn mt-1" action="/createChannel" method="get">
-        <div class="addBtn position-sticky" style="margin-left: 350px;">
-            <input type="submit" name="" value="Create Channel">
+    <form class="actionBtn mt-1" action="/closeChat" method="get">
+        <div class="addBtn position-sticky" style="margin-left: 50px;">
+            <input type="submit" name="" value="Close Chat">
         </div>
     </form>
 
@@ -24,11 +24,22 @@
                         <div class="card-titel mb-4">
                             <div class="d-flex justify-content-start">
                                 <div class="pageHeading mt-1">
-                                    <h3>Marianne Musterfrau</h3>
+                                    <h3 style="text-decoration: underline"><%= chatName%></h3>
                                 </div>
-
-
                             </div>
+                        </div>
+
+                        <div class="card-content">
+
+                            <div id="chatbox">
+                                <textarea></textarea>
+                            </div>
+
+                            <form name="message" class="sendForm" action="/sendMessage">
+                                <input type="text" name="message" id="messageBox" />
+                                <input type="submit"  name="submit" id="submitMessage" value="Send" />
+                            </form>
+
                         </div>
                     </div>
                 </div>

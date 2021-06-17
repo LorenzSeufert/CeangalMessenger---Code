@@ -479,18 +479,39 @@ function createTextChannel(friend,friendId){
 
 app.post("/removeFriend", function (req,res){
 
+    console.log("Call delete Friend")
+
+
     axios.delete(apiUrl + "/user/removeFriend",{
         headers: {
             "id": sessionId,
             "friendName": req.body.deleteName
         }
     }).then(function (response) {
+        console.log("Call update friend list")
+
+
         updateFriends().then( function () {
-            res.render("friendPage",{
-                error: "success",
-                errorMessage: "Friend successfully removed!",
-                friends: friends
+
+            console.log("Call remove text channel")
+
+
+            removeTextChannel(req.body.deleteName).then(function () {
+                console.log(response.data)
+
+                res.render("friendPage",{
+                    error: "success",
+                    errorMessage: "Friend successfully removed!",
+                    friends: friends
+                })
+            }).catch(function (error) {
+                res.render("friendPage", {
+                    error: "error",
+                    errorMessage: "Something went wrong! Please try again!",
+                    friends: friends
+                })
             })
+
         })
     }).catch(function (error){
         res.render("friendPage",{
@@ -516,15 +537,61 @@ function updateFriends(){
     });
 }
 
+function removeTextChannel(name){
+    return new Promise(function (fulfill, reject){
+
+        let channelId = 0
+
+        console.log(textChannels)
+
+        for(var i = 0; i < textChannels.length; i++)
+        {
+            if(textChannels[i].name === name + " - " + user.username || textChannels[i].name === user.username + " - " + name)
+            {
+                channelId = textChannels[i].id;
+                break
+            }
+        }
+
+        console.log(channelId)
+
+        axios.delete(apiUrl + "/textChannel/delete/" + channelId.toString())
+            .then(function (response) {
+            fulfill(response.data)
+        }).catch(function (error){
+            reject(error)
+        })
+    });
+}
+
 app.get("/chats", function (req,res){
-    res.render("chatPage", {
-        textChannels: textChannels
+
+    axios.get(apiUrl + "/textChannel/getAllFromUser",{
+        headers: {
+            "id": user.id,
+        }
+    }).then(function (response){
+        textChannels = response.data
+
+        res.render("chatPage", {
+            error: "false",
+            errorMessage: "",
+            textChannels: textChannels
+        })
+    }).catch(function (error){
+        res.render("chatPage", {
+            error: "error",
+            errorMessage: "Something went wrong! Please try again!",
+            textChannels: textChannels
+        })
     })
 });
 
 app.post("/openChat", function (req,res){
     console.log(req.body.chatWith)
-    res.render("chat")
+    res.render("chat",{
+        chatName: req.body.chatWith
+    })
 });
 
 app.post("/saveData", function (req,res){
