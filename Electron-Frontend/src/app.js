@@ -4,7 +4,7 @@ const ejs = require("ejs");
 const path = require("path");
 const hash = require("crypto");
 const axios = require("axios");
-const SockJs = require('sockjs-client');
+// const SockJs = require('sockjs-client');
 
 const app = express();
 
@@ -45,81 +45,81 @@ function joinMessage(senderId, sender) {
     }
 }
 
-const webSocket = {
-    received_messages: [],
-    connected: false,
-    server: "http://127.0.0.1:8082",
-
-    connect: function (channelId) {
-        if (this.isConnected()) {
-            return;
-        }
-        console.log("trying to connect.")
-        stompClient.connect(
-            {},
-            frame => {
-                this.connected = true;
-                if (channelId !== null) {
-                    stompClient.subscribe("/topic/channel/" + channelId, tick => {
-                        console.log(tick);
-                        this.received_messages.push(JSON.parse(tick.body).content);
-                    })
-                }
-
-                console.log("Connected" + frame);
-            },
-            error => {
-                console.log("Error" + error);
-                this.connected = false;
-            }
-        );
-    },
-
-    send: function (channelId, payload) {
-        if (!this.isConnected()) {
-            this.connect(null)
-        }
-        console.log(JSON.stringify(payload));
-        stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-    },
-
-    disconnect: function (){
-        stompClient.disconnect()
-    },
-
-    joinChannel: function (channelId, payload) {
-        if (!this.isConnected()) {
-            this.connect(null);
-        }
-        console.log(JSON.stringify(payload));
-        stompClient.subscribe("/topic/channel/" + channelId, tick => {
-            console.log(tick);
-            this.received_messages.push(JSON.parse(tick.body).content);
-        })
-    },
-
-    leaveChannel: function (channelId, payload) {
-        if (!this.isConnected()) {
-            this.connect(null);
-        }
-        console.log(JSON.stringify(payload));
-        stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-        stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
-            console.log(tick);
-            this.received_messages.push(JSON.parse(tick.body).content);
-        })
-    },
-
-    isConnected() {
-        if (this.connected === true) {
-            console.log("Already connected to Websocket.");
-            return true;
-        } else {
-            console.log("Not Connected to Websocket.");
-            return false;
-        }
-    }
-}
+// const webSocket = {
+//     received_messages: [],
+//     connected: false,
+//     server: "http://127.0.0.1:8082",
+//
+//     connect: function (channelId) {
+//         if (this.isConnected()) {
+//             return;
+//         }
+//         console.log("trying to connect.")
+//         stompClient.connect(
+//             {},
+//             frame => {
+//                 this.connected = true;
+//                 if (channelId !== null) {
+//                     stompClient.subscribe("/topic/channel/" + channelId, tick => {
+//                         console.log(tick);
+//                         this.received_messages.push(JSON.parse(tick.body).content);
+//                     })
+//                 }
+//
+//                 console.log("Connected" + frame);
+//             },
+//             error => {
+//                 console.log("Error" + error);
+//                 this.connected = false;
+//             }
+//         );
+//     },
+//
+//     send: function (channelId, payload) {
+//         if (!this.isConnected()) {
+//             this.connect(null)
+//         }
+//         console.log(JSON.stringify(payload));
+//         stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
+//     },
+//
+//     disconnect: function (){
+//         stompClient.disconnect()
+//     },
+//
+//     joinChannel: function (channelId, payload) {
+//         if (!this.isConnected()) {
+//             this.connect(null);
+//         }
+//         console.log(JSON.stringify(payload));
+//         stompClient.subscribe("/topic/channel/" + channelId, tick => {
+//             console.log(tick);
+//             this.received_messages.push(JSON.parse(tick.body).content);
+//         })
+//     },
+//
+//     leaveChannel: function (channelId, payload) {
+//         if (!this.isConnected()) {
+//             this.connect(null);
+//         }
+//         console.log(JSON.stringify(payload));
+//         stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
+//         stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
+//             console.log(tick);
+//             this.received_messages.push(JSON.parse(tick.body).content);
+//         })
+//     },
+//
+//     isConnected() {
+//         if (this.connected === true) {
+//             console.log("Already connected to Websocket.");
+//             return true;
+//         } else {
+//             console.log("Not Connected to Websocket.");
+//             return false;
+//         }
+//     }
+// }
 
 
 app.get("/", function (req, res) {
