@@ -4,14 +4,18 @@ const ejs = require("ejs");
 const path = require("path");
 const hash = require("crypto");
 const axios = require("axios");
-const Stomp = require("webstomp-client");
+const SockJs = require('sockjs-client');
+const Stomp = require('stompjs')
 
 const app = express();
+
+let socket = new SockJs(`https://localhost:8080/messages`);
+let stompClient = Stomp.over(socket);
 
 app.use(express.static(__dirname + "/public"));
 app.set("views", path.join(__dirname, "../src/views"));
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.disable("x-powered-by");
 
 const apiUrl = "http://localhost:8080/api"
@@ -40,110 +44,104 @@ function joinMessage(senderId, sender) {
     }
 }
 
-let received_messages = []
+const webSocket = {
+    received_messages: [],
+    connected: false,
+    server: "http://127.0.0.1:8082",
 
-let connected = false
+    connect: function (channelId) {
+        if (this.isConnected()) {
+            return;
+        }
+        stompClient.connect(
+            {},
+            frame => {
+                this.connected = true;
 
-function getWebsocket() {
-    const webSocket = {
-        server: "http://127.0.0.1:8082",
-
-        connect: function (channelId) {
-            if (this.isConnected()) {
-                return;
-            }
-            this.stompClient = Stomp.client("ws://127.0.0.1:8082/messages");
-            this.stompClient.connect(
-                {},
-                frame => {
-                    this.connected = true;
-
-                    if (channelId !== null) {
-                        this.stompClient.subscribe("/topic/channel/" + id, tick => {
-                            console.log(tick);
-                            received_messages.push(JSON.parse(tick.body).content);
-                        })
-                    }
-
-                    console.log("Connected" + frame);
-                },
-                error => {
-                    console.log(error);
-                    connected = false;
+                if (channelId !== null) {
+                    stompClient.subscribe("/topic/channel/" + id, tick => {
+                        console.log(tick);
+                        this.received_messages.push(JSON.parse(tick.body).content);
+                    })
                 }
-            );
-        },
 
-        send: function (channelId, payload) {
-            if (!this.isConnected()) {
-                this.connect(null)
+                console.log("Connected" + frame);
+            },
+            error => {
+                console.log(error);
+                this.connected = false;
             }
-            console.log(JSON.stringify(payload));
-            this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-        },
+        );
+    },
 
-        joinChannel: function (channelId, payload) {
-            if (!this.isConnected()) {
-                this.connect(null);
-            }
-            console.log(JSON.stringify(payload));
-            this.stompClient.subscribe("/topic/channel/" + channelId, tick => {
-                console.log(tick);
-                received_messages.push(JSON.parse(tick.body).content);
-            })
-        },
+    send: function (channelId, payload) {
+        if (!this.isConnected()) {
+            this.connect(null)
+        }
+        console.log(JSON.stringify(payload));
+        stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
+    },
 
-        leaveChannel: function (channelId, payload) {
-            if (!this.isConnected()) {
-                this.connect(null);
-            }
-            console.log(JSON.stringify(payload));
-            this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-            this.stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
-                console.log(tick);
-                received_messages.push(JSON.parse(tick.body).content);
-            })
-        },
+    joinChannel: function (channelId, payload) {
+        if (!this.isConnected()) {
+            this.connect(null);
+        }
+        console.log(JSON.stringify(payload));
+        stompClient.subscribe("/topic/channel/" + channelId, tick => {
+            console.log(tick);
+            this.received_messages.push(JSON.parse(tick.body).content);
+        })
+    },
 
-        isConnected() {
-            if (connected === true) {
-                console.log("Already connected to Websocket.");
-                return true;
-            } else {
-                console.log("Not Connected to Websocket.");
-                return false;
-            }
+    leaveChannel: function (channelId, payload) {
+        if (!this.isConnected()) {
+            this.connect(null);
+        }
+        console.log(JSON.stringify(payload));
+        stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
+        stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
+            console.log(tick);
+            this.received_messages.push(JSON.parse(tick.body).content);
+        })
+    },
+
+    isConnected() {
+        if (this.connected === true) {
+            console.log("Already connected to Websocket.");
+            return true;
+        } else {
+            console.log("Not Connected to Websocket.");
+            return false;
         }
     }
-    return webSocket;
 }
 
 
-app.get("/", function (req,res){
-    res.render("loginPage",{
+app.get("/", function (req, res) {
+    res.render("loginPage", {
         error: "false",
         errorMessage: ""
     })
 });
 
-app.post("/login", function (req, res){
+app.post("/login", function (req, res) {
     let notEmpty = true;
 
-    if(req.body.email === ""){
-        res.render("loginPage",{
+    if (req.body.email === "") {
+        res.render("loginPage", {
             error: "info",
             errorMessage: "Missing email!"
         })
         notEmpty = false
     }
-    if(req.body.password === ""){
-        res.render("loginPage",{
+    if (req.body.password === "") {
+        res.render("loginPage", {
             error: "info",
             errorMessage: "Missing password!"
         })
         notEmpty = false
     }
-    if(notEmpty){
+    if (notEmpty) {
 
         let payload = {
             email: (req.body.email).toString(),
@@ -154,7 +152,7 @@ app.post("/login", function (req, res){
             sessionId = response.headers["sessionid"]
             user = response.data
 
-            res.render("profilePage",{
+            res.render("profilePage", {
                 error: "false",
                 errorMessage: "",
                 username: user.username,
@@ -162,19 +160,19 @@ app.post("/login", function (req, res){
                 birthdate: user.birthdate,
                 description: user.description
             })
-        }).catch(function (error){
-            if (error.response.status === 404){
-                res.render("loginPage",{
+        }).catch(function (error) {
+            if (error.response.status === 404) {
+                res.render("loginPage", {
                     error: "error",
                     errorMessage: "Username not found!"
                 })
-            }else if (error.response.status === 403){
-                res.render("loginPage",{
+            } else if (error.response.status === 403) {
+                res.render("loginPage", {
                     error: "error",
                     errorMessage: "Login credentials not matching!"
                 })
-            }else{
-                res.render("loginPage",{
+            } else {
+                res.render("loginPage", {
                     error: "error",
                     errorMessage: "Something is not working!"
                 })
@@ -183,8 +181,8 @@ app.post("/login", function (req, res){
     }
 });
 
-app.get("/signup", function (req, res){
-    res.render("signupPage",{
+app.get("/signup", function (req, res) {
+    res.render("signupPage", {
         error: "false",
         errorMessage: "",
         email: "",
@@ -195,11 +193,11 @@ app.get("/signup", function (req, res){
     })
 });
 
-app.post("/signup", function (req,res){
+app.post("/signup", function (req, res) {
     let isValid = true;
 
-    if(req.body.email === ""){
-        res.render("signupPage",{
+    if (req.body.email === "") {
+        res.render("signupPage", {
             error: "info",
             errorMessage: "Missing email!",
             email: req.body.email,
@@ -210,8 +208,8 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if(req.body.password1 === ""){
-        res.render("signupPage",{
+    if (req.body.password1 === "") {
+        res.render("signupPage", {
             error: "info",
             errorMessage: "Missing password!",
             email: req.body.email,
@@ -222,8 +220,8 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if(req.body.password2 === ""){
-        res.render("signupPage",{
+    if (req.body.password2 === "") {
+        res.render("signupPage", {
             error: "info",
             errorMessage: "Missing password confirmation!",
             email: req.body.email,
@@ -234,8 +232,8 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if(req.body.username === ""){
-        res.render("signupPage",{
+    if (req.body.username === "") {
+        res.render("signupPage", {
             error: "info",
             errorMessage: "Missing username!",
             email: req.body.email,
@@ -246,8 +244,8 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if(req.body.birthdate === ""){
-        res.render("signupPage",{
+    if (req.body.birthdate === "") {
+        res.render("signupPage", {
             error: "info",
             errorMessage: "Missing birthdate!",
             email: req.body.email,
@@ -258,8 +256,8 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if(req.body.description === ""){
-        res.render("signupPage",{
+    if (req.body.description === "") {
+        res.render("signupPage", {
             error: "info",
             errorMessage: "Missing description!",
             email: req.body.email,
@@ -270,8 +268,8 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if (req.body.password1 !== req.body.password2){
-        res.render("signupPage",{
+    if (req.body.password1 !== req.body.password2) {
+        res.render("signupPage", {
             error: "error",
             errorMessage: "Your passwords are not matching!",
             email: req.body.email,
@@ -282,7 +280,7 @@ app.post("/signup", function (req,res){
         })
         isValid = false
     }
-    if(isValid){
+    if (isValid) {
         let pw = hash.createHash('sha256').update(req.body.password1).digest('hex')
 
         let payload = {
@@ -295,13 +293,13 @@ app.post("/signup", function (req,res){
 
         axios.post(apiUrl + "/user/createUser", payload).then(function (response) {
 
-            res.render("loginPage",{
+            res.render("loginPage", {
                 error: "success",
                 errorMessage: "User creating was successful!"
             })
-        }).catch(function (error){
-            if (error.response.data === "Email and Username already exists"){
-                res.render("signupPage",{
+        }).catch(function (error) {
+            if (error.response.data === "Email and Username already exists") {
+                res.render("signupPage", {
                     error: "error",
                     errorMessage: "Username and Email already exist! Please use something else!",
                     email: "",
@@ -310,8 +308,8 @@ app.post("/signup", function (req,res){
                     username: "",
                     description: req.body.description
                 })
-            }else if (error.response.data === "Username already exists"){
-                res.render("signupPage",{
+            } else if (error.response.data === "Username already exists") {
+                res.render("signupPage", {
                     error: "error",
                     errorMessage: "Username already exist! Please use something else!",
                     email: req.body.email,
@@ -320,8 +318,8 @@ app.post("/signup", function (req,res){
                     username: "",
                     description: req.body.description
                 })
-            }else if (error.response.data === "Email already exists"){
-                res.render("signupPage",{
+            } else if (error.response.data === "Email already exists") {
+                res.render("signupPage", {
                     error: "error",
                     errorMessage: "Email already exist! Please use something else!",
                     email: "",
@@ -330,8 +328,8 @@ app.post("/signup", function (req,res){
                     username: req.body.username,
                     description: req.body.description
                 })
-            }else{
-                res.render("signupPage",{
+            } else {
+                res.render("signupPage", {
                     error: "error",
                     errorMessage: "Something is not working! Please try again",
                     email: req.body.email,
@@ -345,16 +343,16 @@ app.post("/signup", function (req,res){
     }
 });
 
-app.get("/editProfile", function (req,res){
-   res.render("editProfilePage",{
-       error: "false",
-       errorMessage: "",
-       username: user.username
-   })
+app.get("/editProfile", function (req, res) {
+    res.render("editProfilePage", {
+        error: "false",
+        errorMessage: "",
+        username: user.username
+    })
 });
 
-app.get("/profile", function (req,res){
-    res.render("profilePage",{
+app.get("/profile", function (req, res) {
+    res.render("profilePage", {
         error: "false",
         errorMessage: "",
         username: user.username,
@@ -364,21 +362,21 @@ app.get("/profile", function (req,res){
     })
 });
 
-app.get("/logout", function (req,res){
+app.get("/logout", function (req, res) {
 
-    axios.delete(apiUrl + "/user/logout",{
+    axios.delete(apiUrl + "/user/logout", {
         headers: {
             "id": sessionId
         }
     }).then(function (response) {
         sessionId = ""
 
-        res.render("loginPage",{
+        res.render("loginPage", {
             error: "success",
             errorMessage: "Logged out successfully!"
         })
-    }).catch(function (error){
-        res.render("profilePage",{
+    }).catch(function (error) {
+        res.render("profilePage", {
             error: "error",
             errorMessage: "Something went wrong. Please try again!",
             username: user.username,
@@ -389,9 +387,9 @@ app.get("/logout", function (req,res){
     })
 });
 
-app.get("/friends", function (req,res){
+app.get("/friends", function (req, res) {
 
-    axios.get(apiUrl + "/user/getFriends",{
+    axios.get(apiUrl + "/user/getFriends", {
         headers: {
             "id": sessionId
         }
@@ -404,8 +402,8 @@ app.get("/friends", function (req,res){
             friends: friends
         })
 
-    }).catch(function (error){
-        res.render("profilePage",{
+    }).catch(function (error) {
+        res.render("profilePage", {
             error: "false",
             errorMessage: "",
             username: user.username,
@@ -416,28 +414,26 @@ app.get("/friends", function (req,res){
     })
 });
 
-app.post("/addFriend", function (req,res){
+app.post("/addFriend", function (req, res) {
 
-    axios.get(apiUrl + "/user/addFriend",{
+    axios.get(apiUrl + "/user/addFriend", {
         headers: {
             "id": sessionId,
             "friendName": req.body.friendToAdd
         }
     }).then(function (response) {
-        updateFriends().then(function (){
+        updateFriends().then(function () {
 
-            res.render("friendPage",{
+            res.render("friendPage", {
                 error: "success",
                 errorMessage: "Friend successfully added!",
                 friends: friends
             })
-        }).then(function (response){
+        }).then(function (response) {
             let friendId = ""
 
-            for(var i = 0; i < friends.length; i++)
-            {
-                if(friends[i].username === req.body.friendToAdd)
-                {
+            for (var i = 0; i < friends.length; i++) {
+                if (friends[i].username === req.body.friendToAdd) {
                     friendId = friends[i].id;
                     break
                 }
@@ -447,8 +443,8 @@ app.post("/addFriend", function (req,res){
                 console.log("Text channel created!")
             })
         })
-    }).catch(function (error){
-        res.render("friendPage",{
+    }).catch(function (error) {
+        res.render("friendPage", {
             error: "error",
             errorMessage: "Username not found. Could not add as friend!",
             friends: friends
@@ -458,8 +454,8 @@ app.post("/addFriend", function (req,res){
 
 });
 
-function createTextChannel(friend,friendId){
-    return new Promise(function (fulfill, reject){
+function createTextChannel(friend, friendId) {
+    return new Promise(function (fulfill, reject) {
 
         let payload = {
             name: friend + " - " + user.username,
@@ -467,26 +463,26 @@ function createTextChannel(friend,friendId){
                 friend, user.username
             ],
             messages: [
-               joinMessage(user.id,user.username), joinMessage(friendId,friend)
+                joinMessage(user.id, user.username), joinMessage(friendId, friend)
             ]
         }
 
-        axios.post(apiUrl + "/textChannel/create",payload)
+        axios.post(apiUrl + "/textChannel/create", payload)
             .then(function (response) {
-            textChannels.push(response.data)
-            fulfill(response.data)
-        }).catch(function (error){
+                textChannels.push(response.data)
+                fulfill(response.data)
+            }).catch(function (error) {
             reject(error)
         })
     });
 }
 
-app.post("/removeFriend", function (req,res){
+app.post("/removeFriend", function (req, res) {
 
     console.log("Call delete Friend")
 
 
-    axios.delete(apiUrl + "/user/removeFriend",{
+    axios.delete(apiUrl + "/user/removeFriend", {
         headers: {
             "id": sessionId,
             "friendName": req.body.deleteName
@@ -495,7 +491,7 @@ app.post("/removeFriend", function (req,res){
         console.log("Call update friend list")
 
 
-        updateFriends().then( function () {
+        updateFriends().then(function () {
 
             console.log("Call remove text channel")
 
@@ -503,7 +499,7 @@ app.post("/removeFriend", function (req,res){
             removeTextChannel(req.body.deleteName).then(function () {
                 console.log(response.data)
 
-                res.render("friendPage",{
+                res.render("friendPage", {
                     error: "success",
                     errorMessage: "Friend successfully removed!",
                     friends: friends
@@ -517,8 +513,8 @@ app.post("/removeFriend", function (req,res){
             })
 
         })
-    }).catch(function (error){
-        res.render("friendPage",{
+    }).catch(function (error) {
+        res.render("friendPage", {
             error: "error",
             errorMessage: "Something went wrong! Please try again!",
             friends: friends
@@ -526,32 +522,30 @@ app.post("/removeFriend", function (req,res){
     })
 });
 
-function updateFriends(){
-    return new Promise(function (fulfill, reject){
-        axios.get(apiUrl + "/user/getFriends",{
+function updateFriends() {
+    return new Promise(function (fulfill, reject) {
+        axios.get(apiUrl + "/user/getFriends", {
             headers: {
                 "id": sessionId
             }
         }).then(function (response) {
             friends = response.data
             fulfill(response.data)
-        }).catch(function (error){
+        }).catch(function (error) {
             reject(error)
         })
     });
 }
 
-function removeTextChannel(name){
-    return new Promise(function (fulfill, reject){
+function removeTextChannel(name) {
+    return new Promise(function (fulfill, reject) {
 
         let channelId = 0
 
         console.log(textChannels)
 
-        for(var i = 0; i < textChannels.length; i++)
-        {
-            if(textChannels[i].name === name + " - " + user.username || textChannels[i].name === user.username + " - " + name)
-            {
+        for (var i = 0; i < textChannels.length; i++) {
+            if (textChannels[i].name === name + " - " + user.username || textChannels[i].name === user.username + " - " + name) {
                 channelId = textChannels[i].id;
                 break
             }
@@ -561,20 +555,21 @@ function removeTextChannel(name){
 
         axios.delete(apiUrl + "/textChannel/delete/" + channelId.toString())
             .then(function (response) {
-            fulfill(response.data)
-        }).catch(function (error){
+                fulfill(response.data)
+            }).catch(function (error) {
             reject(error)
         })
     });
 }
 
-app.get("/chats", function (req,res){
+app.get("/chats", function (req, res) {
 
-    axios.get(apiUrl + "/textChannel/getAllFromUser",{
+    axios.get(apiUrl + "/textChannel/getAllFromUser", {
         headers: {
             "id": user.id,
         }
-    }).then(function (response){
+    }).then(function (response) {
+        textChannels = []
         textChannels = response.data
 
         res.render("chatPage", {
@@ -582,7 +577,7 @@ app.get("/chats", function (req,res){
             errorMessage: "",
             textChannels: textChannels
         })
-    }).catch(function (error){
+    }).catch(function (error) {
         res.render("chatPage", {
             error: "error",
             errorMessage: "Something went wrong! Please try again!",
@@ -591,33 +586,39 @@ app.get("/chats", function (req,res){
     })
 });
 
-app.post("/openChat", function (req,res){
+app.post("/openChat", function (req, res) {
     console.log(req.body.chatWith)
 
     let channelId
 
-    for(var i = 0; i < textChannels.length; i++)
-    {
-        if(textChannels[i].name === req.body.chatWith)
-        {
+    for (var i = 0; i < textChannels.length; i++) {
+        if (textChannels[i].name === req.body.chatWith) {
             channelId = textChannels[i].id;
             break
         }
     }
     console.log(channelId)
 
+    webSocket.connect(channelId);
 
-    getWebsocket().connect(channelId)
+    /*stompClient.connect({}, () => {
+        stompClient.subscribe('/topic/channel/' + channelId, (data) => {
+            console.log("New message!");
+            console.log(data);
+        });
+    }, () => {
+        console.log('failed');
+    });*/
 
 
-    console.log(received_messages)
+    console.log(webSocket.received_messages)
 
-    res.render("chat",{
+    res.render("chat", {
         chatName: req.body.chatWith
     })
 });
 
-app.post("/saveData", function (req,res){
+app.post("/saveData", function (req, res) {
 
     let payload = {
         username: req.body.newUsername,
@@ -634,33 +635,33 @@ app.post("/saveData", function (req,res){
     }).then(function (response) {
         user = response.data
 
-        res.render("editProfilePage",{
+        res.render("editProfilePage", {
             error: "success",
             errorMessage: "Profile updated successfully!",
             username: user.username
         })
-    }).catch(function (error){
+    }).catch(function (error) {
 
-        if (error.response.data === "Email and Username already exists"){
-            res.render("editProfilePage",{
+        if (error.response.data === "Email and Username already exists") {
+            res.render("editProfilePage", {
                 error: "error",
                 errorMessage: "Username and Email already exist! Please use something else!",
                 username: user.username
             })
-        }else if (error.response.data === "Username already exists"){
-            res.render("editProfilePage",{
+        } else if (error.response.data === "Username already exists") {
+            res.render("editProfilePage", {
                 error: "error",
                 errorMessage: "Username already exist! Please use something else!",
                 username: user.username
             })
-        }else if (error.response.data === "Email already exists"){
-            res.render("editProfilePage",{
+        } else if (error.response.data === "Email already exists") {
+            res.render("editProfilePage", {
                 error: "error",
                 errorMessage: "Email already exist! Please use something else!",
                 username: user.username
             })
-        }else{
-            res.render("editProfilePage",{
+        } else {
+            res.render("editProfilePage", {
                 error: "error",
                 errorMessage: "Something went wrong. Please try again!",
                 username: user.username
@@ -669,9 +670,9 @@ app.post("/saveData", function (req,res){
     })
 });
 
-app.post("/deleteAccount", function (req,res){
+app.post("/deleteAccount", function (req, res) {
 
-    axios.delete(apiUrl + "/user/deleteUser",{
+    axios.delete(apiUrl + "/user/deleteUser", {
         headers: {
             "id": sessionId
         }
@@ -687,12 +688,12 @@ app.post("/deleteAccount", function (req,res){
 
         sessionId = ""
 
-        res.render("loginPage",{
+        res.render("loginPage", {
             error: "success",
             errorMessage: "User deleted successfully!"
         })
-    }).catch(function (error){
-        res.render("editProfilePage",{
+    }).catch(function (error) {
+        res.render("editProfilePage", {
             error: "error",
             errorMessage: "Something went wrong. Please try again!",
             username: user.username

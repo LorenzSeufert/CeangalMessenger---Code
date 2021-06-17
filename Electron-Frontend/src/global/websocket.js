@@ -1,23 +1,31 @@
-import Stomp from "webstomp-client";
+/*
+const Stomp = require('@stomp/stompjs');
 
-export const webSocket = {
-    received_messages: [],
-    connected: false,
-    server: "http://127.0.0.1:8082",
-
-    connect: function (friendIds) {
+class WebSocket {
+    constructor(received_messages, connected, server) {
+        this.received_messages = received_messages
+        this.connected = connected
+        this.server = server
+    }
+    /!*received_messages = [];
+    connected = false;
+    server = "http://127.0.0.1:8082";
+*!/
+    connect(friendIds) {
         if (this.isConnected()) {
             return;
         }
-        this.stompClient = Stomp.client("ws://127.0.0.1:8082/messages");
-        this.stompClient.connect(
+        const stompClient = new Stomp.Client("ws://127.0.0.1:8080/messages");
+
+        //this.stompClient = client.connect()//Stomp.client("ws://127.0.0.1:8080/messages");
+        stompClient.connect(
             {},
             frame => {
                 this.connected = true;
 
                 if (friendIds !== null) {
                     friendIds.forEach(id =>
-                        this.stompClient.subscribe("/topic/channel/" + id, tick => {
+                        stompClient.subscribe("/topic/channel/" + id, tick => {
                             console.log(tick);
                             this.received_messages.push(JSON.parse(tick.body).content);
                         })
@@ -31,17 +39,17 @@ export const webSocket = {
                 this.connected = false;
             }
         );
-    },
+    };
 
-    send: function (channelId, payload) {
+    send(channelId, payload) {
         if (!this.isConnected()) {
             this.connect(null)
         }
         console.log(JSON.stringify(payload));
         this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-    },
+    };
 
-    joinChannel: function (channelId, payload) {
+    joinChannel(channelId, payload) {
         if (!this.isConnected()) {
             this.connect(null);
         }
@@ -50,9 +58,9 @@ export const webSocket = {
             console.log(tick);
             this.received_messages.push(JSON.parse(tick.body).content);
         })
-    },
+    };
 
-    leaveChannel: function (channelId, payload) {
+    leaveChannel(channelId, payload) {
         if (!this.isConnected()) {
             this.connect(null);
         }
@@ -62,7 +70,7 @@ export const webSocket = {
             console.log(tick);
             this.received_messages.push(JSON.parse(tick.body).content);
         })
-    },
+    };
 
     isConnected() {
         if (this.connected === true) {
@@ -74,3 +82,5 @@ export const webSocket = {
         }
     }
 }
+
+module.exports = WebSocket*/
