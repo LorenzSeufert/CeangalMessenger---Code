@@ -27,7 +27,7 @@ class TextChannelService : TextChannelInterface {
         textChannel.usersName.forEach { userName ->
             val optionalUser = userRepository.findByUsername(userName)
 
-            if(optionalUser.isEmpty) {
+            if (optionalUser.isEmpty) {
                 throw UserNotFoundException("One of the users ($userName) wasn't found", BAD_REQUEST)
             }
 
@@ -61,8 +61,11 @@ class TextChannelService : TextChannelInterface {
     }
 
     override fun deleteTextChannel(id: Long) {
-        if (textChannelRepository.findById(id).isEmpty) {
-            throw TextChannelNotFoundException()
+        val textChannel = getTextChannel(id)
+
+        textChannel.usersName.forEach { userName ->
+            val user = getUser(userName)
+            user.textChannels.removeAll { textChannel -> textChannel.id == id }
         }
 
         textChannelRepository.deleteById(id)
@@ -73,6 +76,16 @@ class TextChannelService : TextChannelInterface {
 
         if (optionalUser.isEmpty) {
             throw UserNotFoundException()
+        }
+
+        return optionalUser.get()
+    }
+
+    private fun getUser(name: String): UserProfile {
+        val optionalUser = userRepository.findByUsername(name)
+
+        if (optionalUser.isEmpty) {
+            throw UserNotFoundException("One of the users ($name) wasn't found", BAD_REQUEST)
         }
 
         return optionalUser.get()

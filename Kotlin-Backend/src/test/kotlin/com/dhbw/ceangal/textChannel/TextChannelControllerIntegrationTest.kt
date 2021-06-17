@@ -4,31 +4,29 @@ import com.dhbw.ceangal.usermodel.UserProfile
 import com.dhbw.ceangal.usermodel.UserRepository
 import com.dhbw.ceangal.websocket.model.TextChannel
 import com.dhbw.ceangal.websocket.model.TextChannelRepository
-import com.google.gson.Gson
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import javax.transaction.Transactional
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
+@SpringBootTest(properties = ["feature.application-event-listeners=false"])
+@ActiveProfiles("local,local-h2")
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
+@Transactional
 class TextChannelControllerIntegrationTest {
 
     @Autowired
@@ -68,7 +66,7 @@ class TextChannelControllerIntegrationTest {
             email = "test@test",
             description = "desc"
         )
-        val user = userRepository.save(user)
+        val user1 = userRepository.save(user)
         val user2 = userRepository.save(userProfile)
 
         val result = mvc
@@ -78,13 +76,13 @@ class TextChannelControllerIntegrationTest {
                     .content(
                         """{
                         "name": "testChannel",
-                        "usersName": ["${user.username}","${user2.username}"],
+                        "usersName": ["${user1.username}","${user2.username}"],
                         "messages": [
                             {
                                 "type": "JOIN",
                                 "content": "",
-                                "senderId": "${user.id}",
-                                "sender": "${user.username}"
+                                "senderId": "${user1.id}",
+                                "sender": "${user1.username}"
                             }
                         ]
                     }""".trimIndent()
@@ -105,8 +103,9 @@ class TextChannelControllerIntegrationTest {
 
     @Test
     fun `gets a text channel and returns it as well as Http status OK`() {
-        val user = userRepository.save(user)
+        val user1 = userRepository.save(user)
         val textChannel = textChannelRepository.save(testChannel)
+        println(textChannel)
 
         val result = mvc
             .perform(
@@ -121,12 +120,12 @@ class TextChannelControllerIntegrationTest {
         val resultString = result.response.contentAsString
         assertEquals(textChannelRepository.count(), 1L)
         assertThat(resultString, containsString(""""name":"${textChannel.name}""""))
-        assertThat(resultString, containsString(""""usersName":["${user.username}"]"""))
+        assertThat(resultString, containsString(""""usersName":["${user1.username}"]"""))
     }
 
     @Test
     fun `gets all text channel and returns them as well as Http status OK`() {
-        val user = userRepository.save(user)
+        val user1 = userRepository.save(user)
         val textChannel = textChannelRepository.save(testChannel)
 
         val test2Channel = TextChannel(name = "test2Channel", usersName = mutableSetOf("fritz"))
@@ -150,14 +149,14 @@ class TextChannelControllerIntegrationTest {
 
         val resultString = result.response.contentAsString
         assertEquals(textChannelRepository.count(), 2L)
-        assertThat(resultString, containsString(""""usersName":["${user.username}"]"""))
+        assertThat(resultString, containsString(""""usersName":["${user1.username}"]"""))
         assertThat(resultString, containsString(""""name":"${textChannel.name}""""))
         assertThat(resultString, containsString(""""name":"${text2Channel.name}""""))
     }
 
     @Test
     fun `edits a text channel and returns it as well as Http status OK`() {
-        val user = userRepository.save(user)
+        val user1 = userRepository.save(user)
         val textChannel = textChannelRepository.save(testChannel)
 
         val result = mvc
@@ -180,12 +179,25 @@ class TextChannelControllerIntegrationTest {
         val resultString = result.response.contentAsString
         assertEquals(textChannelRepository.count(), 1L)
         assertThat(resultString, containsString(""""name":"editedChannel""""))
-        assertThat(resultString, containsString(""""usersName":["${user.username}"]"""))
+        assertThat(resultString, containsString(""""usersName":["${user1.username}"]"""))
     }
 
     @Test
-    fun `deletes a text channel and returns Http status OK`() {
+    fun `deletes a text channel and returns Http status OK, text channel was removed from user`() {
+        val userProfile = UserProfile(
+            username = "fritz",
+            password = "123",
+            birthdate = "04.04.2020",
+            email = "test@test",
+            description = "desc"
+        )
+        testChannel.usersName.add(userProfile.username)
         val textChannel = textChannelRepository.save(testChannel)
+
+        userProfile.textChannels.add(textChannel)
+        val user1 = userRepository.save(userProfile)
+
+        assertEquals(1, user1.textChannels.size)
 
         val result = mvc
             .perform(
@@ -197,7 +209,11 @@ class TextChannelControllerIntegrationTest {
             .andExpect(status().isOk)
             .andReturn()
 
+        val testTextChannels = userRepository.findById(user1.id).get().textChannels
+        assertTrue(testTextChannels.isEmpty())
+
         val resultString = result.response.contentAsString
+        assertTrue(testTextChannels.isEmpty())
         assertEquals(textChannelRepository.count(), 0L)
         assertThat(resultString, containsString("""Channel was deleted successfully"""))
     }
