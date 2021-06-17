@@ -30,7 +30,7 @@ class UserProfile(
     @Expose
     var description: String = "",
     @Expose
-    @OneToMany(targetEntity = TextChannel::class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = TextChannel::class, fetch = FetchType.EAGER)
     val textChannels: MutableList<TextChannel> = mutableListOf()
 )
 {
