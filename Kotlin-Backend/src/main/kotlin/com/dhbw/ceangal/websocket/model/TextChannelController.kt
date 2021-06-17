@@ -24,14 +24,14 @@ class TextChannelController {
         return ResponseEntity(textChannelService.getTextChannel(id), OK)
     }
 
-    @GetMapping(path = ["/getAll"])
+    @GetMapping(path = ["/getAllFromUser"])
     fun getAllTextChannelsFromUser(@RequestHeader id: Long) : ResponseEntity<MutableList<TextChannel>> {
         return ResponseEntity(textChannelService.getAllTextChannelsFromUser(id), OK)
     }
 
     @PutMapping(path = ["/edit"])
-    fun editChannel(@RequestBody textChannel: TextChannel) {
-        textChannelService.editTextChannel(textChannel)
+    fun editChannel(@RequestBody textChannel: TextChannel) : ResponseEntity<TextChannel> {
+        return ResponseEntity(textChannelService.editTextChannel(textChannel), OK)
     }
 
     @DeleteMapping(path = ["/delete/{textChannelId}"])

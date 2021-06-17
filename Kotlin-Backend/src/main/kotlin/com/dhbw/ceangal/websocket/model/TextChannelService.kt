@@ -25,10 +25,16 @@ class TextChannelService : TextChannelInterface {
 
         val channel = textChannelRepository.save(textChannel)
         textChannel.usersName.forEach { userName ->
-            val user = userRepository.findByUsername(userName)
-            user.textChannels.add(channel)
-        }
+            val optionalUser = userRepository.findByUsername(userName)
 
+            if(optionalUser.isEmpty) {
+                throw UserNotFoundException("One of the users ($userName) wasn't found", BAD_REQUEST)
+            }
+
+            val user = optionalUser.get()
+            user.textChannels.add(channel)
+            userRepository.save(user)
+        }
         return channel
     }
 
