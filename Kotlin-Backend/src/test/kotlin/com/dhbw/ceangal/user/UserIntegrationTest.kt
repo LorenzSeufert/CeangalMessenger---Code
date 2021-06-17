@@ -365,7 +365,6 @@ class UserIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
-            .andDo(print())
             .andReturn()
 
         val resultAsString = result2.response.contentAsString
