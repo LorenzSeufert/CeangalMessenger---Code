@@ -51,6 +51,7 @@ class UserIntegrationTest {
     fun clearDatabase() {
         userRepository.deleteAll()
         userSessionRepository.deleteAll()
+        friendRepository.deleteAll()
     }
 
     @Test
