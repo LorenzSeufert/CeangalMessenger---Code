@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
+import javax.transaction.Transactional
 import kotlin.test.assertEquals
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
+@Transactional
 class createUserRestTest {
     @Autowired
     lateinit var userController: UserController

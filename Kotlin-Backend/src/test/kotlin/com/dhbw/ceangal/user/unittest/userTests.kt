@@ -1,6 +1,6 @@
-package com.dhbw.ceangal.user
+/*
+package com.dhbw.ceangal.user.unittest
 
-import com.dhbw.ceangal.friend.Friend
 import com.dhbw.ceangal.friend.FriendRepository
 import com.dhbw.ceangal.usermodel.UserController
 import com.dhbw.ceangal.usermodel.UserProfile
@@ -11,16 +11,11 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
@@ -36,10 +31,11 @@ open class UserTests {
     lateinit var userService: UserService
     @Autowired
     lateinit var userController: UserController
+
     @Test
     fun login(){
 
-        /*setup Mock*/
+        setup Mock
 
         val userProfile = UserProfile(
             username = "Test",
@@ -52,7 +48,7 @@ open class UserTests {
 
         mvc
             .perform(
-                MockMvcRequestBuilders.post(
+                post(
                     "/api/login")
                     .param("username", "Test")
                     .param("password", "password")
@@ -60,6 +56,7 @@ open class UserTests {
                         """{
                         "username": ["Test"],
                         "password": ["password"]
+                        "email": [test@trashmail.de]
                     }""".trimIndent()
                     )
             )
@@ -67,7 +64,6 @@ open class UserTests {
 
 
     }
-
     @Test
     fun addFriend(){
         val userProfile1 = UserProfile(
@@ -92,7 +88,7 @@ open class UserTests {
 
         mvc
             .perform(
-                MockMvcRequestBuilders.get("/api/user/addFriend")
+                get("/api/user/addFriend")
                     .header("id", sessionId)
                     .header("friendName","${user2.username}")
             )
@@ -134,4 +130,4 @@ open class UserTests {
     }
 
 
-}
+}*/
