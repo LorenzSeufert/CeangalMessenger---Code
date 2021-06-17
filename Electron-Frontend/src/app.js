@@ -4,6 +4,7 @@ const ejs = require("ejs");
 const path = require("path");
 const hash = require("crypto");
 const axios = require("axios");
+const Stomp = require("webstomp-client");
 
 const app = express();
 
@@ -39,79 +40,82 @@ function joinMessage(senderId, sender) {
     }
 }
 
-const webSocket = {
-    received_messages: [],
-    connected: false,
-    server: "http://127.0.0.1:8082",
+let received_messages = []
 
-    connect: function (friendIds) {
-        if (this.isConnected()) {
-            return;
-        }
-        this.stompClient = Stomp.client("ws://127.0.0.1:8082/messages");
-        this.stompClient.connect(
-            {},
-            frame => {
-                this.connected = true;
+let connected = false
 
-                if (friendIds !== null) {
-                    friendIds.forEach(id =>
+function getWebsocket() {
+    const webSocket = {
+        server: "http://127.0.0.1:8082",
+
+        connect: function (channelId) {
+            if (this.isConnected()) {
+                return;
+            }
+            this.stompClient = Stomp.client("ws://127.0.0.1:8082/messages");
+            this.stompClient.connect(
+                {},
+                frame => {
+                    this.connected = true;
+
+                    if (channelId !== null) {
                         this.stompClient.subscribe("/topic/channel/" + id, tick => {
                             console.log(tick);
-                            this.received_messages.push(JSON.parse(tick.body).content);
+                            received_messages.push(JSON.parse(tick.body).content);
                         })
-                    )
+                    }
+
+                    console.log("Connected" + frame);
+                },
+                error => {
+                    console.log(error);
+                    connected = false;
                 }
+            );
+        },
 
-                console.log("Connected" + frame);
-            },
-            error => {
-                console.log(error);
-                this.connected = false;
+        send: function (channelId, payload) {
+            if (!this.isConnected()) {
+                this.connect(null)
             }
-        );
-    },
+            console.log(JSON.stringify(payload));
+            this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
+        },
 
-    send: function (channelId, payload) {
-        if (!this.isConnected()) {
-            this.connect(null)
-        }
-        console.log(JSON.stringify(payload));
-        this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-    },
+        joinChannel: function (channelId, payload) {
+            if (!this.isConnected()) {
+                this.connect(null);
+            }
+            console.log(JSON.stringify(payload));
+            this.stompClient.subscribe("/topic/channel/" + channelId, tick => {
+                console.log(tick);
+                received_messages.push(JSON.parse(tick.body).content);
+            })
+        },
 
-    joinChannel: function (channelId, payload) {
-        if (!this.isConnected()) {
-            this.connect(null);
-        }
-        console.log(JSON.stringify(payload));
-        this.stompClient.subscribe("/topic/channel/" + channelId, tick => {
-            console.log(tick);
-            this.received_messages.push(JSON.parse(tick.body).content);
-        })
-    },
+        leaveChannel: function (channelId, payload) {
+            if (!this.isConnected()) {
+                this.connect(null);
+            }
+            console.log(JSON.stringify(payload));
+            this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
+            this.stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
+                console.log(tick);
+                received_messages.push(JSON.parse(tick.body).content);
+            })
+        },
 
-    leaveChannel: function (channelId, payload) {
-        if (!this.isConnected()) {
-            this.connect(null);
-        }
-        console.log(JSON.stringify(payload));
-        this.stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
-        this.stompClient.unsubscribe("/topic/channel/" + channelId).then(tick => {
-            console.log(tick);
-            this.received_messages.push(JSON.parse(tick.body).content);
-        })
-    },
-
-    isConnected() {
-        if (this.connected === true) {
-            console.log("Already connected to Websocket.");
-            return true;
-        } else {
-            console.log("Not Connected to Websocket.");
-            return false;
+        isConnected() {
+            if (connected === true) {
+                console.log("Already connected to Websocket.");
+                return true;
+            } else {
+                console.log("Not Connected to Websocket.");
+                return false;
+            }
         }
     }
+    return webSocket;
 }
 
 
@@ -589,6 +593,25 @@ app.get("/chats", function (req,res){
 
 app.post("/openChat", function (req,res){
     console.log(req.body.chatWith)
+
+    let channelId
+
+    for(var i = 0; i < textChannels.length; i++)
+    {
+        if(textChannels[i].name === req.body.chatWith)
+        {
+            channelId = textChannels[i].id;
+            break
+        }
+    }
+    console.log(channelId)
+
+
+    getWebsocket().connect(channelId)
+
+
+    console.log(received_messages)
+
     res.render("chat",{
         chatName: req.body.chatWith
     })
