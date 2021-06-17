@@ -106,7 +106,7 @@ class UserController {
     @DeleteMapping(value = ["/user/removeFriend"])
     fun removeFriend(@RequestHeader id: String, @RequestHeader friendName: String): ResponseEntity<String> {
         userService.removeFriend(id, friendName)
-        return ResponseEntity("Friend was successful removed", HttpStatus.OK)
+        return ResponseEntity("Friend was successfully removed", HttpStatus.OK)
     }
 
     /**
