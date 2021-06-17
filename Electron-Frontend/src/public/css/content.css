@@ -119,3 +119,12 @@ body{
     transition: 0.25s;
     font-size: 14px;
 }
+
+.chatbox textarea{
+    width: 660px;
+    height: 380px;
+    background: #232931;
+    resize: none;
+    color: white;
+    white-space: pre-wrap;
+}

@@ -82,6 +82,10 @@ const webSocket = {
         stompClient.send("/app/channel/" + channelId, JSON.stringify(payload))
     },
 
+    disconnect: function (){
+        stompClient.disconnect()
+    },
+
     joinChannel: function (channelId, payload) {
         if (!this.isConnected()) {
             this.connect(null);
@@ -615,6 +619,40 @@ app.post("/openChat", function (req, res) {
 
     res.render("chat", {
         chatName: req.body.chatWith
+    })
+});
+
+app.get("/closeChat", function (req,res){
+    webSocket.disconnect()
+
+    axios.get(apiUrl + "/textChannel/getAllFromUser", {
+        headers: {
+            "id": user.id,
+        }
+    }).then(function (response) {
+        textChannels = []
+        textChannels = response.data
+
+        res.render("chatPage", {
+            error: "false",
+            errorMessage: "",
+            textChannels: textChannels
+        })
+    }).catch(function (error) {
+        res.render("chatPage", {
+            error: "error",
+            errorMessage: "Something went wrong! Please restart application!",
+            textChannels: textChannels
+        })
+    })
+
+});
+
+app.get("/createChannel", function (req,res){
+    res.render("chatPage", {
+        error: "error",
+        errorMessage: "Feature not supported yet. We are sorry!",
+        textChannels: textChannels
     })
 });
 
